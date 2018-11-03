@@ -14,7 +14,7 @@ class Xingcai extends WebBase
         $lastNo = $this->getGameLastNo(5);
 
         $zddata = $this->getGameZdData(5, $lastNo['actionNo']);
-        $opencode = $zddata ? $zddata : randKeys();
+        $opencode = $zddata ? $zddata : self::randKeys_ffc();
 
         $result = [
             'lastNo' => $lastNo,
@@ -32,6 +32,63 @@ class Xingcai extends WebBase
             $rand .= ($rand != '' ? ',' : '') . mt_rand(0, 9);
         }
         return $rand;
+    }
+
+    public final function cqssc()
+    {
+        @session_start();
+
+        $lastNo = $this->getGameLastNo(1);
+        $kjHao = $this->getValue("select data from {$this->prename}data where type=1 and number='{$lastNo['actionNo']}'");
+        if ($kjHao) $kjHao = explode(',', $kjHao);
+        $actionNo = $this->getGameNo(1);
+        $types = $this->getTypes();
+        $kjdTime = $types[1]['data_ftime'];
+        $diffTime = strtotime($actionNo['actionTime']) - $this->time - $kjdTime;
+        $kjDiffTime = strtotime($lastNo['actionTime']) - $this->time;
+        $user = $this->user['username'];
+        $sql = "select type from {$this->prename}members where username='$user'";
+        $data = $this->getRow($sql);
+        $type = $data['type'];
+
+        $result = [
+            'kjHao' => $kjHao,
+            'kjdTime' => $kjdTime,
+            'diffTime' => $diffTime,
+            'kjDiffTime' => $kjDiffTime,
+            'type' => $type,
+        ];
+
+        parent::json_display($result);
+    }
+
+    public final function pk10()
+    {
+
+        @session_start();
+
+        $lastNo=$this->getGameLastNo(20);
+        $kjHao=$this->getValue("select data from {$this->prename}data where type=20 and number='{$lastNo['actionNo']}'");
+        if($kjHao) $kjHao=explode(',', $kjHao);
+        $actionNo=$this->getGameNo(20);
+        $types=$this->getTypes();
+        $kjdTime=$types[20]['data_ftime'];
+        $diffTime=strtotime($actionNo['actionTime'])-$this->time-$kjdTime;
+        $kjDiffTime=strtotime($lastNo['actionTime'])-$this->time;
+        $user=$this->user['username'];
+        $sql="select type from {$this->prename}members where username='$user'";
+        $data=$this->getRow($sql);
+        $type=$data['type'];
+
+        $result = [
+            'kjHao' => $kjHao,
+            'kjdTime' => $kjdTime,
+            'diffTime' => $diffTime,
+            'kjDiffTime' => $kjDiffTime,
+            'type' => $type,
+        ];
+
+        parent::json_display($result);
     }
 
     public final function xc2fc()
