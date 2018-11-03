@@ -14,7 +14,8 @@ class WebLoginBase extends WebBase{
 		session_start();
 		if(!$_SESSION[$this->memberSessionName]){
 			header('location: /index.php/user/login');
-		    exit('您没有登录');
+//		    exit('您没有登录');
+		    parent::json_fails('您没有登录');
 		}
 		try{
 			parent::__construct($dsn, $user, $password);
@@ -22,11 +23,14 @@ class WebLoginBase extends WebBase{
 			// 限制同一个用户只能在一个地方登录
 			$x=$this->getRow("select isOnLine,state from lottery_member_session where uid={$this->user['uid']} and session_key=? order by id desc limit 1", session_id());
 			if(!$x['isOnLine'] && $x['state']==1){
-				echo "<script>alert('对不起,您的账号在别处登陆,您被强迫下线!');window.location.href='/index.php/user/login'</script>";
-				exit();
+
+                parent::json_fails('对不起,您的账号在别处登陆,您被强迫下线!');
+//                echo "<script>alert('对不起,您的账号在别处登陆,您被强迫下线!');window.location.href='/index.php/user/login'</script>";
+//				exit();
 			}else if(!$x['isOnLine']){
-				echo "<script>alert('对不起,登陆超时或网络不稳定,请重新登陆!');window.location.href='/index.php/user/login'</script>";
-				exit();
+                parent::json_fails('对不起,登陆超时或网络不稳定,请重新登陆!');
+//                echo "<script>alert('对不起,登陆超时或网络不稳定,请重新登陆!');window.location.href='/index.php/user/login'</script>";
+//				exit();
 			}
 		}catch(Exception $e){
 		}
