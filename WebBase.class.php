@@ -20,11 +20,6 @@ class WebBase extends Object
 
     function __construct($dsn, $user = '', $password = '')
     {
-        header('Access-Control-Allow-Origin', '*');
-        header('Access-Control-Allow-Headers', 'Origin,Authorization,Content-Type,Cookie,Accept');
-        header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE');
-        header('Access-Control-Allow-Credentials', 'false');
-
         session_start();
         try {
             parent::__construct($dsn, $user, $password);
