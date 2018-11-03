@@ -1,10 +1,5 @@
 <?php
 
-header('Access-Control-Allow-Origin:*');
-header('Access-Control-Allow-Headers:Origin,Authorization,Content-Type,Cookie,Accept');
-header('Access-Control-Allow-Methods:*');
-header('Access-Control-Allow-Credentials:false');
-
 class Index extends WebLoginBase
 {
     public $pageSize = 10;
@@ -99,7 +94,12 @@ class Index extends WebLoginBase
     {
 //        $this->display('index.php');
         $types = $this->getTypes();
-        parent::json_display(['types' => $types]);
+
+        $result = self::notice();
+
+        $result['types'] = $types;
+
+        parent::json_display($result);
     }
 
     public final function group($type, $groupId)
@@ -312,5 +312,39 @@ class Index extends WebLoginBase
         $result = $this->ifs($num, '0');
 
         parent::json_display(['num' => $result]);
+    }
+
+    /**
+     * 列表页
+     */
+    public final function notice()
+    {
+        $sql = "select * from {$this->prename}content where enable=1 and nodeId=1";
+        $sql .= ' order by id desc';
+        $info = $this->getPage($sql, $this->page, 10);
+
+        $cout = 0;
+        $styles = array('tr_line_2_a', 'tr_line_2_b');
+
+        $result = [
+            'info' => $info,
+            'cout' => $cout,
+            'styles' => $styles,
+        ];
+
+        return $result;
+    }
+
+    /**
+     * 详情页
+     */
+    public final function view($infoid)
+    {
+        $infoid = intval($infoid);
+        $info = $this->getRow("select * from {$this->prename}content where id=?", $infoid);
+        $this->action = 'notice';
+//        $this->display('notice/view.php', 0, $info);
+
+        parent::json_display(['info' => $info]);
     }
 }

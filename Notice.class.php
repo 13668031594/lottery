@@ -13,7 +13,6 @@ class Notice extends WebLoginBase
         $sql .= ' order by id desc';
         $info = $this->getPage($sql, $this->page, $this->pageSize);
         $this->action = 'notice';
-//		$this->display('notice/list.php',0,$info);
 
         $cout = 0;
         $styles = array('tr_line_2_a', 'tr_line_2_b');
