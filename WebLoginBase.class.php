@@ -14,7 +14,7 @@ class WebLoginBase extends WebBase{
 	function __construct($dsn, $user='', $password=''){
 		session_start();
 		if(!$_SESSION[$this->memberSessionName]){
-			header('location: /index.php/user/login');
+//			header('location: /index.php/user/login');
 //		    exit('您没有登录');
 		    parent::json_fails('您没有登录');
 		}
