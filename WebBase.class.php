@@ -22,8 +22,6 @@ class WebBase extends Object
 
     function __construct($dsn, $user = '', $password = '')
     {
-
-
         session_start();
         try {
             parent::__construct($dsn, $user, $password);

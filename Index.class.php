@@ -342,7 +342,7 @@ class Index extends WebLoginBase
     {
         $infoid = intval($infoid);
         $info = $this->getRow("select * from {$this->prename}content where id=?", $infoid);
-        $this->action = 'notice';
+//        $this->action = 'notice';
 //        $this->display('notice/view.php', 0, $info);
 
         parent::json_display(['info' => $info]);
