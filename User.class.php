@@ -25,8 +25,9 @@ class User extends WebBase
             $this->update("update {$this->prename}member_session set isOnLine=0 where uid={$this->user['uid']}");
 //            echo "<script>alert('您已安全退出，欢迎再次光临!');window.location.href='/index.php/user/login'</script>";
 //            exit();
-            parent::json_success('您已安全退出，欢迎再次光临!');
         }
+
+        parent::json_success('您已安全退出，欢迎再次光临!');
     }
 
     //设置称昵
