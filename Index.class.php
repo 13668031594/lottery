@@ -93,7 +93,8 @@ class Index extends WebLoginBase
     public final function main()
     {
 //        $this->display('index.php');
-        parent::json_display();
+        $types = $this->getTypes();
+        parent::json_display(['types' => $types]);
     }
 
     public final function group($type, $groupId)
@@ -280,7 +281,7 @@ class Index extends WebLoginBase
         $lastNo['diffTime'] = strtotime($thisNo['actionTime']) - $this->time;
         $lastNo['kjdTime'] = $this->getTypeFtime($type);
 //        return $lastNo;
-        parent::json_success(null,0,['lastNo' => $lastNo]);
+        parent::json_success(null, 0, ['lastNo' => $lastNo]);
     }
 
     // 加载人员信息框
