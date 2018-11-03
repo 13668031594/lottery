@@ -85,8 +85,8 @@ class User extends WebBase
             $para['browser'] = '<font color="#FF0000">unkown';
         }
         //print_r($para);exit;
-//        return $para;
-        parent::json_success(null, null, $para);
+        return $para;
+//        parent::json_success(null, null, $para);
     }
 
     /*活动*/
@@ -152,12 +152,13 @@ class User extends WebBase
             'accessTime' => $this->time,
             'loginIP' => self::ip(true)
         );
-
+//        exit('13');
         $session = array_merge($session, $this->getBrowser());
 
         if ($this->insertRow($this->prename . 'member_session', $session)) {
             $user['sessionId'] = $this->lastInsertId();
         }
+
         $_SESSION[$this->memberSessionName] = serialize($user);
 
         // 把别人踢下线
@@ -165,6 +166,7 @@ class User extends WebBase
 
 //        return $user;
         $sessionId = session_id();
+//        exit($sessionId);
         parent::json_success('登录成功', 0, ['sessionId' => $sessionId]);
     }
 
