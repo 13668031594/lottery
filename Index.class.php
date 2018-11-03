@@ -1,5 +1,10 @@
 <?php
 
+header('Access-Control-Allow-Origin:*');
+header('Access-Control-Allow-Headers:Origin,Authorization,Content-Type,Cookie,Accept');
+header('Access-Control-Allow-Methods:*');
+header('Access-Control-Allow-Credentials:false');
+
 class Index extends WebLoginBase
 {
     public $pageSize = 10;
