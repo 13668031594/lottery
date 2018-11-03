@@ -5,7 +5,7 @@ class about extends WebBase{
 	public final function daili(){
 		$this->display('about/daili.php');
 	}
-
+ 
 	public final function about(){
 		$this->display('about/about.php');
 	}
