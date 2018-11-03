@@ -113,7 +113,7 @@ class User extends WebBase
         $vcode = $_POST['vcode'];
 //        if (!ctype_alnum($username)) throw new Exception('<font color="#FF0000">用户名包含非法字符,请重新输入');
 //        if (!ctype_alnum($username))  parent::json_fails('用户名包含非法字符,请重新输入');
-
+        parent::json_fails(['username:' . $username . '--password:' . $password]);
         if (!isset($username)) {
 //            throw new Exception('<font color="#FF0000">请输入用户名');
             parent::json_fails('请输入用户名');
