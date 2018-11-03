@@ -118,7 +118,7 @@ class User extends WebBase
 //            throw new Exception('<font color="#FF0000">请输入用户名');
             parent::json_fails('请输入用户名');
         }
-        if (!$password) {
+        if (!isset($password)) {
 //            throw new Exception('<font color="#FF0000">不允许空密码登录');
             parent::json_fails('不允许空密码登录');
         }
@@ -165,7 +165,7 @@ class User extends WebBase
 
 //        return $user;
         $sessionId = session_id();
-        parent::json_success('登录成功',0,['sessionId' => $sessionId]);
+        parent::json_success('登录成功', 0, ['sessionId' => $sessionId]);
     }
 
     /**

@@ -142,7 +142,7 @@ class Team extends WebLoginBase
         //单号
         if ($para['betId'] && $para['betId'] != '输入单号') {
             $para['betId'] = wjStrFilter($para['betId']);
-            if (!ctype_alnum($para['betId'])) throw new Exception('单号包含非法字符,请重新输入');
+            if (!ctype_alnum($para['betId'])) parent::json_fails('单号包含非法字符,请重新输入');
             $whereStr .= " and b.wjorderId='{$para['betId']}'";
         }
 
@@ -150,7 +150,7 @@ class Team extends WebLoginBase
         // 用户名限制
         if ($para['username'] && $para['username'] != '用户名') {
             $para['username'] = wjStrFilter($para['username']);
-            if (!ctype_alnum($para['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            if (!ctype_alnum($para['username'])) parent::json_fails('用户名包含非法字符,请重新输入');
             $whereStr .= " and u.username like '%{$para['username']}%' and concat(',',u.parents,',') like '%,{$this->user['uid']},%'";
         }
         switch ($para['utype']) {
@@ -265,7 +265,7 @@ class Team extends WebLoginBase
         } elseif ($para['username'] && $para['username'] != '用户名') {
             // 用户名限制
             $para['username'] = wjStrFilter($para['username']);
-            if (!ctype_alnum($para['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            if (!ctype_alnum($para['username'])) parent::json_fails('用户名包含非法字符,请重新输入');
             $uid = $this->getValue("select uid from {$this->prename}members where username=? and concat(',',parents,',') like '%,{$this->user['uid']},%'", $para['username']);
             $userWhere = "and u.username='{$para['username']}' and concat(',', u.parents, ',') like '%,{$this->user['uid']},%'";
         } else {
@@ -434,7 +434,7 @@ class Team extends WebLoginBase
         // 用户类型限制
         if ($_REQUEST['username'] && $_REQUEST['username'] != '用户名') {
             $_REQUEST['username'] = wjStrFilter($_REQUEST['username']);
-            if (!ctype_alnum($_REQUEST['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            if (!ctype_alnum($_REQUEST['username'])) parent::json_fails('用户名包含非法字符,请重新输入');
             $userWhere = " and u.parents like '%,{$this->user['uid']},%' and u.username like '%{$_REQUEST['username']}%'";
         }
         //$userWhere3="concat(',',u.parents,',') like '%,{$this->user['uid']},%'"; //所有人
@@ -552,7 +552,7 @@ class Team extends WebLoginBase
         // 用户类型限制
         if ($_REQUEST['username'] && $_REQUEST['username'] != '用户名') {
             $_REQUEST['username'] = wjStrFilter($_REQUEST['username']);
-            if (!ctype_alnum($_REQUEST['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            if (!ctype_alnum($_REQUEST['username'])) parent::json_fails('用户名包含非法字符,请重新输入');
             $userWhere = " and u.parents like '%,{$this->user['uid']},%' and u.username like '%{$_REQUEST['username']}%'";
         }
         //$userWhere3="concat(',',u.parents,',') like '%,{$this->user['uid']},%'"; //所有人
@@ -641,7 +641,7 @@ class Team extends WebLoginBase
         // 用户类型限制
         if ($_REQUEST['username'] && $_REQUEST['username'] != '用户名') {
             $_REQUEST['username'] = wjStrFilter($_REQUEST['username']);
-            if (!ctype_alnum($_REQUEST['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            if (!ctype_alnum($_REQUEST['username'])) parent::json_fails('用户名包含非法字符,请重新输入');
             $userWhere = " and u.parents like '%,{$this->user['uid']},%' and u.username like '%{$_REQUEST['username']}%'";
         }
         //$userWhere3="concat(',',u.parents,',') like '%,{$this->user['uid']},%'"; //所有人
@@ -831,7 +831,7 @@ class Team extends WebLoginBase
         // 用户名限制
         if ($_GET['username'] && $_GET['username'] != '用户名') {
             $_GET['username'] = wjStrFilter($_GET['username']);
-            if (!ctype_alnum($_GET['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            if (!ctype_alnum($_GET['username'])) parent::json_fails('用户名包含非法字符,请重新输入');
             $sql .= " and u.username like '%{$_GET['username']}%' and concat(',',u.parents,',') like '%,{$this->user['uid']},%'";
         } else {
             // 从属关系限制
