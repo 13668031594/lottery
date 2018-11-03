@@ -163,7 +163,8 @@ class User extends WebBase
         //$this->update("update {$this->prename}member_session set isOnLine=0,state=1 where uid={$user['uid']} and id<{$user['sessionId']}");
 
 //        return $user;
-        parent::json_success('登录成功');
+        $sessionId = session_id();
+        parent::json_success('登录成功',0,['sessionId' => $sessionId]);
     }
 
     /**
