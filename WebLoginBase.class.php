@@ -3,6 +3,10 @@
  * 前台页面基类
  */
 header('Content-type: text/html; charset=UTF-8');
+header('Access-Control-Allow-Origin', '*');
+header('Access-Control-Allow-Headers', 'Origin,Authorization,Content-Type,Cookie,Accept');
+header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE');
+header('Access-Control-Allow-Credentials', 'false');
 class WebLoginBase extends WebBase{
 	
 	public $type;		// 彩票种类ID
