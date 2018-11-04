@@ -104,9 +104,9 @@ class Game extends WebLoginBase
             }
             //if(intval($chkBonus)!=intval($code['bonusProp'])) parent::json_fails('提交奖金出错，请重新投注');
             //检查返点
-            if (floatval($code['fanDian']) > floatval($this->user['fanDian']) || floatval($code['fanDian']) > floatval($this->settings['fanDianMax']))
+//            if (floatval($code['fanDian']) > floatval($this->user['fanDian']) || floatval($code['fanDian']) > floatval($this->settings['fanDianMax']))
 //                parent::json_fails('提交返点出错，请重新投注');
-                parent::json_fails('提交返点出错，请重新投注');
+//                parent::json_fails('提交返点出错，请重新投注');
             //检查倍数
             if (intval($code['beiShu']) < 1)
 //                parent::json_fails('倍数只能为大于1正整数');

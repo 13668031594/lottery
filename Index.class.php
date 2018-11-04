@@ -56,7 +56,7 @@ class Index extends WebLoginBase
         $sql = "select groupName from {$this->prename}played_group where id=?";
         $groupName = $this->getValue($sql, $this->groupId);
 
-        $sql = "select id, name, playedTpl, enable, bonusProp, bonusBase  from {$this->prename}played where enable=1 and groupId=? order by sort";
+        $sql = "select id, name, playedTpl, enable, bonusProp, bonusPropBase  from {$this->prename}played where enable=1 and groupId=? order by sort";
         $playeds = $this->getRows($sql, $this->groupId);
 
         $sql = "select simpleInfo, info, example  from {$this->prename}played where id=?";
