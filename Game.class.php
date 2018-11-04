@@ -20,6 +20,8 @@ class Game extends WebLoginBase
     {
 
         $codes = $_POST['code'];
+        unset($codes['money']);
+        unset($codes['modeText']);
         $para = $_POST['para'];
         if ($this->type) $para['type'] = $this->type;
         $amount = 0;
