@@ -34,32 +34,32 @@ class Game extends WebLoginBase
 
         $this->getSystemSettings();
         if ($this->settings['switchBuy'] == 0)
-//            parent::$this->json_fails('本平台已经停止购买！');
+//            parent::json_fails('本平台已经停止购买！');
             parent::json_fails('本平台已经停止购买！');
         if ($this->settings['switchDLBuy'] == 0 && $this->user['type'])
-//            parent::$this->json_fails('代理不能买单！');
+//            parent::json_fails('代理不能买单！');
             parent::json_fails('代理不能买单！');
         if ($this->settings['switchZDLBuy'] == 0 && ($this->user['parents'] == $this->user['uid']))
-//            parent::$this->json_fails('总代理不能买单！');
+//            parent::json_fails('总代理不能买单！');
             parent::json_fails('总代理不能买单！');
         if (count($codes) == 0)
-//            parent::$this->json_fails('请先选择号码再提交投注');
+//            parent::json_fails('请先选择号码再提交投注');
             parent::json_fails('请先选择号码再提交投注');
         //检查时间 期数
         if ($para['kjTime'] < $this->time)
-//            parent::$this->json_fails('提交数据出错,请刷新再投');
+//            parent::json_fails('提交数据出错,请刷新再投');
             parent::json_fails('提交数据出错,请刷新再投');
         $ftime = $this->getTypeFtime(intval($para['type'])); //封单时间
         $actionTime = $this->getGameActionTime(intval($para['type'])); //当期时间
         $actionNo = $this->getGameActionNo(intval($para['type'])); //当期期数
         if ($actionTime != $para['kjTime'])
-//            parent::$this->json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
+//            parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
         if ($actionNo != $para['actionNo'])
-//            parent::$this->json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
+//            parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
         if ($actionTime - $ftime < $this->time)
-//            parent::$this->json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
+//            parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
         // 查检每注的赔率是否正常
         $this->getPlayeds();
@@ -69,55 +69,55 @@ class Game extends WebLoginBase
             $actionTime2 = $this->getGameActionTime(intval($code['type'])); //当期时间2
             $actionNo2 = $this->getGameActionNo(intval($code['type'])); //当期期数2
             if ($actionTime2 != $para['kjTime'])
-//                parent::$this->json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
+//                parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
                 parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             if ($actionNo2 != $para['actionNo'])
-//                parent::$this->json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
+//                parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
                 parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             if ($actionTime - $ftime2 < $this->time)
-//                parent::$this->json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
+//                parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
                 parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             $played = $this->playeds[$code['playedId']];
             //检查开启
             if (!$played['enable'])
-//                parent::$this->json_fails('游戏玩法组已停,请刷新再投(1)');
+//                parent::json_fails('游戏玩法组已停,请刷新再投(1)');
                 parent::json_fails('游戏玩法组已停,请刷新再投(1)');
             //检查ID
             if ($played['groupId'] != $code['playedGroup'])
-//                parent::$this->json_fails('提交数据出错，请重新投注1');
+//                parent::json_fails('提交数据出错，请重新投注1');
                 parent::json_fails('提交数据出错，请重新投注1');
             if ($played['id'] != $code['playedId'])
-//                parent::$this->json_fails('提交数据出错，请重新投注2');
+//                parent::json_fails('提交数据出错，请重新投注2');
                 parent::json_fails('提交数据出错，请重新投注2');
             //检查赔率
             $chkBonus = ($played['bonusProp'] - $played['bonusPropBase']) / $this->settings['fanDianMax'] * $this->user['fanDian'] + $played['bonusPropBase'] - ($played['bonusProp'] - $played['bonusPropBase']) * $code['fanDian'] / $this->settings['fanDianMax']; //实际奖金
-            //if($code['bonusProp']>$played['bonusProp']) parent::$this->json_fails('提交奖金大于最大奖金，请重新投注');
+            //if($code['bonusProp']>$played['bonusProp']) parent::json_fails('提交奖金大于最大奖金，请重新投注');
             if ($code['bonusProp'] < $played['bonusPropBase'])
-//                parent::$this->json_fails('提交奖金小于最小奖金，请重新投注');
+//                parent::json_fails('提交奖金小于最小奖金，请重新投注');
                 parent::json_fails('提交奖金小于最小奖金，请重新投注');
             if ($code['bonusProp'] == $played['bonusPropBase'] && $code['bonusProp'] == $played['bonusProp'] && $played['bonusPropBase'] == $played['bonusProp']) {
                 if ($code['fanDian'] != 0)
-//                    parent::$this->json_fails('提交返点不正确');
+//                    parent::json_fails('提交返点不正确');
                     parent::json_fails('提交返点不正确');
             }
-            //if(intval($chkBonus)!=intval($code['bonusProp'])) parent::$this->json_fails('提交奖金出错，请重新投注');
+            //if(intval($chkBonus)!=intval($code['bonusProp'])) parent::json_fails('提交奖金出错，请重新投注');
             //检查返点
             if (floatval($code['fanDian']) > floatval($this->user['fanDian']) || floatval($code['fanDian']) > floatval($this->settings['fanDianMax']))
-//                parent::$this->json_fails('提交返点出错，请重新投注');
+//                parent::json_fails('提交返点出错，请重新投注');
                 parent::json_fails('提交返点出错，请重新投注');
             //检查倍数
             if (intval($code['beiShu']) < 1)
-//                parent::$this->json_fails('倍数只能为大于1正整数');
+//                parent::json_fails('倍数只能为大于1正整数');
                 parent::json_fails('倍数只能为大于1正整数');
             //检查位数
             if (in_array($code['playedId'], $arr4id)) {
-                //if(!in_array($code['weiShu'],$arr4)) parent::$this->json_fails('提交数据出错，请重新投注3');
+                //if(!in_array($code['weiShu'],$arr4)) parent::json_fails('提交数据出错，请重新投注3');
             }
             if (in_array($code['playedId'], $arr3id)) {
-                //if(!in_array($code['weiShu'],$arr3)) parent::$this->json_fails('提交数据出错，请重新投注4');
+                //if(!in_array($code['weiShu'],$arr3)) parent::json_fails('提交数据出错，请重新投注4');
             }
             if (in_array($code['playedId'], $arr2id)) {
-                //if(!in_array($code['weiShu'],$arr2)) parent::$this->json_fails('提交数据出错，请重新投注5');
+                //if(!in_array($code['weiShu'],$arr2)) parent::json_fails('提交数据出错，请重新投注5');
             }
             //检查模式
             $mosi = array();
@@ -130,26 +130,26 @@ class Game extends WebLoginBase
             if ($this->settings['limosi'] == 1)
                 array_unshift($mosi, '0.001');
             if (!in_array($code['mode'], $mosi))
-//                parent::$this->json_fails('投注模式出错，请重新投注');
+//                parent::json_fails('投注模式出错，请重新投注');
                 parent::json_fails('投注模式出错，请重新投注');
             // 检查注数
             if ($code['actionNum'] < 1)
-//                parent::$this->json_fails('注数不能小于1，请重新投注');
+//                parent::json_fails('注数不能小于1，请重新投注');
                 parent::json_fails('注数不能小于1，请重新投注');
             if ($betCountFun = $played['betCountFun']) {
                 if ($played['betCountFun'] == 'descar') {
                     if ($code['actionNum'] > Bet::$betCountFun($code['actionData']))
-//                        parent::$this->json_fails('下单失败,您投注号码不符合投注规则，请重新投注(1)');
+//                        parent::json_fails('下单失败,您投注号码不符合投注规则，请重新投注(1)');
                         parent::json_fails('下单失败,您投注号码不符合投注规则，请重新投注(1)');
                 } else {
-                    //if($code['actionNum']!=Bet::$betCountFun($code['actionData'])) parent::$this->json_fails($code['actionNum'].'下单失败,您投注号码不符合投注规则，请重新投注(2)'.Bet::$betCountFun($code['actionData'])."/".$code['actionData']);
+                    //if($code['actionNum']!=Bet::$betCountFun($code['actionData'])) parent::json_fails($code['actionNum'].'下单失败,您投注号码不符合投注规则，请重新投注(2)'.Bet::$betCountFun($code['actionData'])."/".$code['actionData']);
                 }
             }
             //最大注数检查
             $maxcount = $this->getmaxcount($code['playedId']);
             $playedname = $this->getplayedname($code['playedId']);
             if ($code['actionNum'] > $maxcount)
-//                parent::$this->json_fails('注数超过玩法:' . $playedname . '  最高注数:' . $maxcount . '注,请重新投注!');
+//                parent::json_fails('注数超过玩法:' . $playedname . '  最高注数:' . $maxcount . '注,请重新投注!');
                 parent::json_fails('注数超过玩法:' . $playedname . '  最高注数:' . $maxcount . '注,请重新投注!');
             //最低消费金额计算
             $mincoin += $this->getmincoin($code['playedId']);
@@ -195,12 +195,12 @@ class Game extends WebLoginBase
                     list($dt2, $b2) = explode('-', $ano['actionNo']); //当前的
                     if ($dt2 < $dt1 || ($dt2 == $dt1 && $b2 < $b1)) {
                     } else {
-//                        parent::$this->json_fails('投注失败1：您追投注的第' . $ano['actionNo'] . '期已经过购买时间！');
+//                        parent::json_fails('投注失败1：您追投注的第' . $ano['actionNo'] . '期已经过购买时间！');
                         parent::json_fails('投注失败1：您追投注的第' . $ano['actionNo'] . '期已经过购买时间！');
                     }
                 }
                 if (strtotime($actionNo['actionTime']) - $ftime < $this->time)
-//                    parent::$this->json_fails('投注失败2：你追号投注第' . $code['actionNo'] . '已过购买时间');
+//                    parent::json_fails('投注失败2：你追号投注第' . $code['actionNo'] . '已过购买时间');
                     parent::json_fails('投注失败2：你追号投注第' . $code['actionNo'] . '已过购买时间');
                 $amount += abs($code['actionNum'] * $code['mode'] * $code['beiShu']);
                 $codes[] = $code;
@@ -210,7 +210,7 @@ class Game extends WebLoginBase
             $info = '投注';
 
             if ($actionNo != $code['actionNo'])
-//                parent::$this->json_fails('投注失败：你投注第' . $code['actionNo'] . '已过购买时间');
+//                parent::json_fails('投注失败：你投注第' . $code['actionNo'] . '已过购买时间');
                 parent::json_fails('投注失败：你投注第' . $code['actionNo'] . '已过购买时间');
             foreach ($codes as $i => $code) {
                 $codes[$i] = array_merge($code, $para);
@@ -220,18 +220,18 @@ class Game extends WebLoginBase
 
         //最低消费金额检查
         if ($amount < $mincoin)
-//            parent::$this->json_fails('本次投注方案总共:' . $allNum . '注,最低消费金额:' . $mincoin . '元,请重新投注!');
+//            parent::json_fails('本次投注方案总共:' . $allNum . '注,最低消费金额:' . $mincoin . '元,请重新投注!');
             parent::json_fails('本次投注方案总共:' . $allNum . '注,最低消费金额:' . $mincoin . '元,请重新投注!');
         // 查询用户可用资金
         $userAmount = $this->getValue("select coin from {$this->prename}members where uid={$this->user['uid']}");
         if ($userAmount < $amount)
-//            parent::$this->json_fails('您的可用资金不足，是否充值？(2)');
+//            parent::json_fails('您的可用资金不足，是否充值？(2)');
             parent::json_fails('您的可用资金不足，是否充值？(2)');
         // 开始事物处理
         $this->beginTransaction();
         try {
             foreach ($codes as $code) {
-                //parent::$this->json_fails('error');
+                //parent::json_fails('error');
                 unset($code['playedName']);
                 // 插入投注表
                 $code['wjorderId'] = $code['type'] . $code['playedId'] . $this->randomkeys(8 - strlen($code['type'] . $code['playedId']));
@@ -252,6 +252,7 @@ class Game extends WebLoginBase
                     'coin' => -$amount
                 ));
             }
+
             // 返点与积分等开奖时结算
             $sscname = $this->getValue("select shortName from {$this->prename}type where id={$code['type']}");
             $this->commit();
@@ -311,7 +312,7 @@ class Game extends WebLoginBase
         $liqType = 101;
         $info = '投注';
         foreach ($codes as $i => $code) {
-            //if($code['bonusProp']!=$this->getLHCRte($code['bonusPropName'],intval($para['playedId']))) parent::$this->json_fails('奖金数值调用错误');
+            //if($code['bonusProp']!=$this->getLHCRte($code['bonusPropName'],intval($para['playedId']))) parent::json_fails('奖金数值调用错误');
             if (isset($code['bonusPropName']))
                 unset($code['bonusPropName']);
             //检查返点
@@ -324,8 +325,8 @@ class Game extends WebLoginBase
                 parent::json_fails('倍数只能为大于1正整数');
             //检查金额
             $code['actionAmount'] = $code['actionNum'] * $code['mode'] * $code['beiShu'];
-            //if(intval($code['actionNum']*$code['mode']*$code['beiShu'])!=intval($code['actionAmount'])) parent::$this->json_fails('提交数据出错，请重新投注');
-            //parent::$this->json_fails('111');
+            //if(intval($code['actionNum']*$code['mode']*$code['beiShu'])!=intval($code['actionAmount'])) parent::json_fails('提交数据出错，请重新投注');
+            //parent::json_fails('111');
             $codes[$i] = array_merge($code, $para);
             $amount += abs($code['actionNum'] * $code['mode'] * $code['beiShu']);
         }
@@ -340,7 +341,7 @@ class Game extends WebLoginBase
                 // 插入投注表
                 $code['wjorderId'] = $code['type'] . $code['playedId'] . $this->randomkeys(8 - strlen($code['type'] . $code['playedId']));
                 $amount = abs($code['actionAmount']);
-                //parent::$this->json_fails('222');
+                //parent::json_fails('222');
                 $this->insertRow($this->prename . 'bets', $code);
                 // 添加用户资金流动日志
                 $this->addCoin(array(
@@ -386,11 +387,11 @@ class Game extends WebLoginBase
         $arr2id = array('30', '35', '36', '213', '214', '208');
 
         $this->getSystemSettings();
-//        if ($this->settings['switchBuy'] == 0) parent::$this->json_fails('本平台已经停止购买！');
+//        if ($this->settings['switchBuy'] == 0) parent::json_fails('本平台已经停止购买！');
         if ($this->settings['switchBuy'] == 0) parent::json_fails('本平台已经停止购买！');
-//        if ($this->settings['switchDLBuy'] == 0 && $this->user['type']) parent::$this->json_fails('代理不能买单！');
+//        if ($this->settings['switchDLBuy'] == 0 && $this->user['type']) parent::json_fails('代理不能买单！');
         if ($this->settings['switchDLBuy'] == 0 && $this->user['type']) parent::json_fails('代理不能买单！');
-//        if ($this->settings['switchZDLBuy'] == 0 && ($this->user['parents'] == $this->user['uid'])) parent::$this->json_fails('总代理不能买单！');
+//        if ($this->settings['switchZDLBuy'] == 0 && ($this->user['parents'] == $this->user['uid'])) parent::json_fails('总代理不能买单！');
         if ($this->settings['switchZDLBuy'] == 0 && ($this->user['parents'] == $this->user['uid'])) parent::json_fails('总代理不能买单！');
 
         //检查时间 期数
@@ -425,12 +426,12 @@ class Game extends WebLoginBase
             if ($code['fanDian'] != 0) parent::json_fails('提交返点不正确');
         }
 //                        var_dump($chkBonus,$return['bonusProp']);
-//			if(round($chkBonus)!=round($return['bonusProp'])) parent::$this->json_fails('提交奖金出错，请重新投注');
+//			if(round($chkBonus)!=round($return['bonusProp'])) parent::json_fails('提交奖金出错，请重新投注');
         $return['bonusProp'] = $chkBonus;
 
         $return['fanDian'] = $this->user['fanDian'];
         //检查返点
-//			if(floatval($return['fanDian'])>floatval($this->user['fanDian']) || floatval($return['fanDian'])>floatval($this->settings['fanDianMax'])) parent::$this->json_fails('提交返点出错，请重新投注');
+//			if(floatval($return['fanDian'])>floatval($this->user['fanDian']) || floatval($return['fanDian'])>floatval($this->settings['fanDianMax'])) parent::json_fails('提交返点出错，请重新投注');
         //检查倍数
         if (intval($return['beiShu']) < 1) parent::json_fails('倍数只能为大于1正整数');
         //检查位数
@@ -706,7 +707,7 @@ class Game extends WebLoginBase
         return $len;
     }
 
-
+    //goalone
     public final function getData()
     {
         $type = (int)$_GET['type'];
@@ -721,6 +722,6 @@ class Game extends WebLoginBase
 
         $result['data'] = $this->getRows($sql);
 
-        parent::json_success(null,0,$result);
+        parent::json_display($result);
     }
 }
