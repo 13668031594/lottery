@@ -54,11 +54,6 @@ class Game extends WebLoginBase
         $actionTime = $this->getGameActionTime(intval($para['type'])); //当期时间
         $actionNo = $this->getGameActionNo(intval($para['type'])); //当期期数
 
-        $post = fopen('post.txt', 'w');
-        $txt = 'actionTime:' . $actionTime . '-' . $para['kjTime'] . '；actionNo：' . $actionNo . '-' . $para['actionNo'] . '；thisTime：' . $this->time . '；ftime：' . $ftime;
-        fwrite($post, $txt);
-        fclose($post);
-
         if ($actionTime != $para['kjTime'])
 //            parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');

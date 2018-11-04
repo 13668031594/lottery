@@ -62,6 +62,8 @@ class Index extends WebLoginBase
         $sql = "select simpleInfo, info, example  from {$this->prename}played where id=?";
         $playeds2 = $this->getRows($sql, $this->played);
 
+        $actionNo['kjTime'] = strtotime($actionNo['actionTime']);
+
         $result = [
             'type' => $this->type,
             'groupId' => $this->groupId,
@@ -74,6 +76,7 @@ class Index extends WebLoginBase
             'diffTime' => $diffTime,
             'kjDiffTime' => $kjDiffTime,
             'actionNo' => $actionNo,
+
             'groupName' => $groupName,
             'played' => $played,
             'playeds' => $playeds,
