@@ -10,8 +10,9 @@ class Game extends WebLoginBase
         if ($this->settings['switchBuy'] == 0) {
             $actionNo['flag'] = 1;
         }
+
 //        echo json_encode($actionNo);
-        parent::json_success(null,0,['actionNo' => $actionNo]);
+        parent::json_success(null, 0, ['actionNo' => $actionNo]);
     }
 
     //{{{ 投注
@@ -536,7 +537,7 @@ class Game extends WebLoginBase
             $actionNo['actionTime'] = strtotime($actionNo['actionTime']);
         }
 //        echo json_encode($actionNo);
-        parent::json_success(null,0,['actionNo' => $actionNo]);
+        parent::json_success(null, 0, ['actionNo' => $actionNo]);
     }
 
     /**
@@ -553,7 +554,7 @@ class Game extends WebLoginBase
             $this->getTypes();
         if (!$this->playeds)
             $this->getPlayeds();
-        $modes  = array(
+        $modes = array(
             '0.001' => '厘',
             '0.010' => '分',
             '0.100' => '角',
@@ -561,7 +562,7 @@ class Game extends WebLoginBase
         );
 
         $toTime = strtotime('00:00:00');
-        $sql="select id,wjorderId,actionNo,actionTime,fpEnable,playedId,type,left(actionData,15) as shows,beiShu,mode,actionNum,lotteryNo,bonus,isDelete,kjTime,zjCount from {$this->prename}bets where  isDelete=0 and uid={$this->user['uid']} and actionTime>{$toTime} order by id desc limit 10";
+        $sql = "select id,wjorderId,actionNo,actionTime,fpEnable,playedId,type,left(actionData,15) as shows,beiShu,mode,actionNum,lotteryNo,bonus,isDelete,kjTime,zjCount from {$this->prename}bets where  isDelete=0 and uid={$this->user['uid']} and actionTime>{$toTime} order by id desc limit 10";
 
         $list = $this->getRows($sql, $actionNo['actionNo']);
 
@@ -703,5 +704,23 @@ class Game extends WebLoginBase
             $len *= strlen($code) / $codeLen;
         }
         return $len;
+    }
+
+
+    public final function getData()
+    {
+        $type = (int)$_GET['type'];
+        $page = (int)$_GET['page'];
+        $type = empty($type) ? 1 : $type;
+        $page = empty($page) ? 1 : $page;
+        $pages = 15;
+
+        $limit = ($page- 1) * $pages ;
+
+        $sql = "SELECT * FROM {$this->prename}data WHERE type = {$type} ORDER BY time desc LIMIT {$limit},{$pages}";
+
+        $result = $this->getRows($sql);
+
+        parent::json_success(null,0,$result);
     }
 }
