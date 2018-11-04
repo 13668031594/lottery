@@ -745,7 +745,7 @@ class Game extends WebLoginBase
 //        $amount = floatval($_GET['amount']);
 
 //        $nos = core::lib('game')->get_game_next_nos($type, $num);
-        $nos = $this->getGameNos(5,10);
+        $nos = $this->getGameNos($type,$num);
         $result = [
             'type' => $type,
             'num' => $num,
