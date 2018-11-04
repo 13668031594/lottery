@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * 前台页面基类
  */
@@ -215,6 +214,7 @@ class WebBase extends Object
         $types = $this->getTypes();
         if (($fun = $types[$type]['onGetNoed']) && method_exists($this, $fun)) {
             if ($return) foreach ($return as $i => $var) {
+
                 $this->$fun($return[$i]['actionNo'], $return[$i]['actionTime'], $time);
                 $return[$i]['actionTime'] = strtotime($return[$i]['actionTime']);
             }

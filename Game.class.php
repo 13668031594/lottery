@@ -24,10 +24,10 @@ class Game extends WebLoginBase
 //        unset($codes['modeText']);
         $para = $_POST['para'];
 
-        $posts = fopen('post.txt','w');
+        /*$posts = fopen('post.txt','w');
         $text = json_encode(['code' => $codes,'para' => $para]);
         fwrite($posts,$text);
-        fclose($posts);
+        fclose($posts);*/
 
         if ($this->type) $para['type'] = $this->type;
         $amount = 0;
@@ -756,6 +756,11 @@ class Game extends WebLoginBase
 
 //        $nos = core::lib('game')->get_game_next_nos($type, $num);
         $nos = $this->getGameNos($type, $num);
+
+        foreach ($nos as &$v) {
+            $v['actionDate'] = date('Y-m-d ') . date('H:i:s', $v['actionTime']);
+        }
+
         $result = [
             'type' => $type,
             'num' => $num,
