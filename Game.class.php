@@ -18,7 +18,7 @@ class Game extends WebLoginBase
     //{{{ 投注
     public final function postCode()
     {
-        $post = fopen('post.text','w');
+        $post = fopen('post.txt','w');
         $txt = json_encode($_POST);
         fwrite($post,$txt);
         fclose($post);
