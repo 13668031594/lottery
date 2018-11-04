@@ -18,6 +18,10 @@ class Game extends WebLoginBase
     //{{{ 投注
     public final function postCode()
     {
+        $post = fopen('post.text','w');
+        $txt = json_encode($_POST);
+        fwrite($post,$txt);
+        fclose($post);
         $codes = $_POST['code'];
         $para = $_POST['para'];
         if ($this->type) $para['type'] = $this->type;
