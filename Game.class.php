@@ -724,4 +724,37 @@ class Game extends WebLoginBase
 
         parent::json_display($result);
     }
+
+    public final function zhuihao()
+    {
+        $types = $this->getTypes();
+//        $types = core::lib('game')->get_types();
+
+        if (
+            !array_key_exists('type', $_GET) || !array_key_exists($_GET['type'], $types) ||
+            !array_key_exists('num', $_GET) || !in_array($_GET['num'], array(0, 10, 20, 30, 40, 50)) //||
+//            !array_key_exists('beiShu', $_GET) || !core::lib('validate')->number($_GET['beiShu']) ||
+//            !array_key_exists('mode', $_GET) || !array_key_exists($_GET['mode'] = number_format($_GET['mode'], 3, '.', ''), $this->modes) ||
+//            !array_key_exists('amount', $_GET) || !core::lib('validate')->number_float($_GET['amount'], 3)
+        ) parent::json_fails('参数错误');
+
+        $type = intval($_GET['type']);
+        $num = intval($_GET['num']);
+//        $beiShu = intval($_GET['beiShu']);
+//        $mode = floatval($_GET['mode']);
+//        $amount = floatval($_GET['amount']);
+
+//        $nos = core::lib('game')->get_game_next_nos($type, $num);
+        $nos = $this->getGameNos(5,10);
+        $result = [
+            'type' => $type,
+            'num' => $num,
+//            'beiShu' => $beiShu,
+//            'mode' => $mode,
+//            'amount' => $amount,
+            'nos' => $nos
+        ];
+
+        parent::json_display($result);
+    }
 }
