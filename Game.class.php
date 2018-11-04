@@ -20,8 +20,8 @@ class Game extends WebLoginBase
     {
 
         $codes = $_POST['code'];
-        unset($codes['money']);
-        unset($codes['modeText']);
+//        unset($codes['money']);
+//        unset($codes['modeText']);
         $para = $_POST['para'];
 
         $posts = fopen('post.txt','w');
