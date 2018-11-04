@@ -20,40 +20,37 @@ class Cash extends WebLoginBase
             $ngrade = $this->user['grade'];
         }
 
-        $date1 = strtotime('00:00:00');
-
-        $bank1 = $this->getRow("select m.*,b.logo logo, b.name bankName from {$this->prename}member_bank m, {$this->prename}bank_list b where b.isDelete=0 and m.bankId=b.id and m.uid=? limit 1", $this->user['uid']);
+        $date = strtotime('00:00:00');
 
         $bank = $this->getRow("select m.*,b.logo logo, b.name bankName from {$this->prename}member_bank m, {$this->prename}bank_list b where b.isDelete=0 and m.bankId=b.id and m.uid=? limit 1", $this->user['uid']);
-        $this->freshSession();
-        $date = strtotime('00:00:00');
-        $date2 = strtotime('00:00:00');
-        $time = strtotime(date('Y-m-d', $this->time));
-        $cashAmout1 = 0;
-        $rechargeAmount = 0;
-        $rechargeTime = strtotime('00:00');
-        if ($this->settings['cashMinAmount']) {
-            $cashMinAmount = $this->settings['cashMinAmount'] / 100;
-            $gRs = $this->getRow("select sum(case when rechargeAmount>0 then rechargeAmount else amount end) as rechargeAmount from {$this->prename}member_recharge where  uid={$this->user['uid']} and state in (1,2,9) and isDelete=0 and rechargeTime>=" . $rechargeTime);
-            if ($gRs) {
-                $rechargeAmount = $gRs["rechargeAmount"];
-            }
-        }
-        $cashAmout = $this->getValue("select sum(mode*beiShu*actionNum) from {$this->prename}bets where isDelete=0 and actionTime>={$rechargeTime} and uid={$this->user['uid']}");
-        $times = $this->getValue("select count(*) from {$this->prename}member_cash where actionTime>=$time and uid=?", $this->user['uid']);
 
+        if($bank['bankId']) {
+
+            $bank = $this->getRow("select m.*,b.logo logo, b.name bankName from {$this->prename}member_bank m, {$this->prename}bank_list b where b.isDelete=0 and m.bankId=b.id and m.uid=? limit 1", $this->user['uid']);
+            $this->freshSession();
+            $date = strtotime('00:00:00');
+            $date2 = strtotime('00:00:00');
+            $time = strtotime(date('Y-m-d', $this->time));
+            $cashAmout = 0;
+            $rechargeAmount = 0;
+            $rechargeTime = strtotime('00:00');
+            if ($this->settings['cashMinAmount']) {
+                $cashMinAmount = $this->settings['cashMinAmount'] / 100;
+                $gRs = $this->getRow("select sum(case when rechargeAmount>0 then rechargeAmount else amount end) as rechargeAmount from {$this->prename}member_recharge where  uid={$this->user['uid']} and state in (1,2,9) and isDelete=0 and rechargeTime>=" . $rechargeTime);
+                if ($gRs) {
+                    $rechargeAmount = $gRs["rechargeAmount"];
+                }
+            }
+            $cashAmout = $this->getValue("select sum(mode*beiShu*actionNum) from {$this->prename}bets where isDelete=0 and actionTime>={$rechargeTime} and uid={$this->user['uid']}");
+            $times = $this->getValue("select count(*) from {$this->prename}member_cash where actionTime>=$time and uid=?", $this->user['uid']);
+        }
         $result = [
-            'date' => $date,
-            'date1' => $date1,
-            'date2' => $date2,
-            'bank1' => $bank1,
-            'bank2' => $bank,
-            'cashAmout1' => $cashAmout1,
-            'cashAmout' => $cashAmout,
+            'bank' => $bank,
+            'cashAmout' => isset($cashAmout) ? $cashAmout : null,
             'cashMinAmount' => isset($cashMinAmount) ? $cashMinAmount : null,
-            'rechargeAmount' => $rechargeAmount,
+            'rechargeAmount' => isset($rechargeAmount) ? $rechargeAmount : null,
             'ngrade' => $ngrade,
-            'times' => $times
+            'times' => isset($times) ? $times : null,
         ];
 
         parent::json_display($result);
@@ -76,6 +73,7 @@ class Cash extends WebLoginBase
         parent::json_display(['txcount' => $txcount]);
     }
 
+
     public final function recharge()
     {
 //        $this->display('cash/recharge.php');
@@ -88,13 +86,12 @@ class Cash extends WebLoginBase
         parent::json_display(['banks' => $banks, 'set' => $set]);
     }
 
-
     public final function rechargeLog()
     {
         $fromTime = $this->iff($_REQUEST['fromTime'], $_REQUEST['fromTime'], date('Y-m-d H:i', $GLOBALS['fromTime']));
         $toTime = $this->iff($_REQUEST['toTime'], $_REQUEST['toTime'], date('Y-m-d H:i', $GLOBALS['toTime']));
 
-        parent::display(['fromTime' => $fromTime, 'toTime' => $toTime]);
+        parent::json_display(['fromTime' => $fromTime, 'toTime' => $toTime]);
     }
 
     public final function rechargelist()
@@ -423,7 +420,6 @@ class Cash extends WebLoginBase
         $this->getTypes();
         $this->getPlayeds();
 //        $this->display('cash/recharge-modal.php', 0, $id);
-
 
         $sql = "select r.* from {$this->prename}member_recharge r where r.id=?";
         $rechargeInfo = $this->getRow($sql, $id);

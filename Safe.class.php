@@ -235,7 +235,7 @@ class Safe extends WebLoginBase
         if ($bank['editEnable'] != 1) parent::json_fails('银行信息绑定后不能随便更改，如需更改，请联系在线客服');
     }
 
-//设置登陆问候语
+    //设置登陆问候语
     public final function care()
     {
         if (!$_POST) parent::json_fails('提交参数出错');
@@ -279,5 +279,21 @@ class Safe extends WebLoginBase
         } else {
             parent::json_fails('更改昵称出错');
         }
+    }
+
+    //new，银行列表
+    public final function bankList()
+    {
+        $myBank=$this->getRow("select * from {$this->prename}member_bank where uid=?", $this->user['uid']);
+        $banks=$this->getRows("select * from {$this->prename}bank_list where isDelete=0 and id!=12 and id!=17 and id!=19 and id!=18 and id!=20 and id!=21 and id!=22 order by sort");
+
+        $flag=($myBank['editEnable']!=1)&&($myBank);
+
+        $result = [
+            'banks' => $banks,
+            'flag' => $flag,
+        ];
+
+        parent::json_display($result);
     }
 }
