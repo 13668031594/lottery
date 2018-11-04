@@ -18,10 +18,7 @@ class Game extends WebLoginBase
     //{{{ 投注
     public final function postCode()
     {
-        $post = fopen('post.txt','w');
-        $txt = json_encode($_POST);
-        fwrite($post,$txt);
-        fclose($post);
+
         $codes = $_POST['code'];
         $para = $_POST['para'];
         if ($this->type) $para['type'] = $this->type;
@@ -56,6 +53,12 @@ class Game extends WebLoginBase
         $ftime = $this->getTypeFtime(intval($para['type'])); //封单时间
         $actionTime = $this->getGameActionTime(intval($para['type'])); //当期时间
         $actionNo = $this->getGameActionNo(intval($para['type'])); //当期期数
+
+        $post = fopen('post.txt', 'w');
+        $txt = 'actionTime:' . $actionTime . '-' . $para['kjTime'] . '；actionNo：' . $actionNo . '-' . $para['actionNo'] . '；thisTime：' . $this->time . '；ftime：' . $ftime;
+        fwrite($post, $txt);
+        fclose($post);
+
         if ($actionTime != $para['kjTime'])
 //            parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
             parent::json_fails('投注失败：你投注第' . $para['actionNo'] . '已过购买时间');
@@ -720,7 +723,7 @@ class Game extends WebLoginBase
         $page = empty($page) ? 1 : $page;
         $pages = 15;
 
-        $limit = ($page- 1) * $pages ;
+        $limit = ($page - 1) * $pages;
 
         $sql = "SELECT * FROM {$this->prename}data WHERE type = {$type} ORDER BY time desc LIMIT {$limit},{$pages}";
 
@@ -749,7 +752,7 @@ class Game extends WebLoginBase
 //        $amount = floatval($_GET['amount']);
 
 //        $nos = core::lib('game')->get_game_next_nos($type, $num);
-        $nos = $this->getGameNos($type,$num);
+        $nos = $this->getGameNos($type, $num);
         $result = [
             'type' => $type,
             'num' => $num,

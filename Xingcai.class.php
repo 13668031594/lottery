@@ -16,9 +16,13 @@ class Xingcai extends WebBase
         $zddata = $this->getGameZdData(5, $lastNo['actionNo']);
         $opencode = $zddata ? $zddata : self::randKeys_ffc();
 
+//        $action = $this->getGameNo(5);
+
         $result = [
             'lastNo' => $lastNo,
             'opencode' => $opencode,
+//            'action' => $action,
+//            'time' => date('Y-m-d H:i:s')
         ];
 
         parent::json_display($result);
