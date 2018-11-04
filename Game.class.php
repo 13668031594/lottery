@@ -23,6 +23,12 @@ class Game extends WebLoginBase
         unset($codes['money']);
         unset($codes['modeText']);
         $para = $_POST['para'];
+
+        $posts = fopen('post.txt','w');
+        $text = json_encode(['code' => $codes,'para' => $para]);
+        fwrite($posts,$text);
+        fclose($posts);
+
         if ($this->type) $para['type'] = $this->type;
         $amount = 0;
         $mincoin = 0;
