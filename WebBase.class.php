@@ -208,7 +208,7 @@ class WebBase extends Object
         }
 
         $sql = "select actionNo, actionTime from {$atimedb} where type=$type and actionTime>? order by actionTime";
-        if ($num) $sql .= " limit $num";
+        if ($num) $sql .= " limit 1,$num";
         $return = $this->getRows($sql, $atime);
 
         $types = $this->getTypes();
