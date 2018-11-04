@@ -719,7 +719,7 @@ class Game extends WebLoginBase
 
         $sql = "SELECT * FROM {$this->prename}data WHERE type = {$type} ORDER BY time desc LIMIT {$limit},{$pages}";
 
-        $result = $this->getRows($sql);
+        $result['data'] = $this->getRows($sql);
 
         parent::json_success(null,0,$result);
     }
