@@ -247,20 +247,31 @@ class WebBase extends Object
         $actionTime = date('Y-m-d ', $time) . $actionTime;
     }
 
-    public function noHdCQSSC(&$actionNo, &$actionTime, $time = null)
-    {
-        $actionNo = wjStrFilter($actionNo);
+//    public function noHdCQSSC(&$actionNo, &$actionTime, $time = null)
+//    {
+//        $actionNo = wjStrFilter($actionNo);
+//        $this->setTimeNo($actionTime, $time);
+//        if ($actionNo == 0 || $actionNo == 120) {
+//            //echo 999;
+//            $actionNo = date('Ymd-120', $time - 24 * 3600);
+//            $actionTime = date('Y-m-d 00:00', $time);
+//            //echo $actionTime;
+//        } else {
+//            $actionNo = date('Ymd', $time) . substr(1000 + $actionNo, 1);
+//        }
+//        //var_dump($actionNo);exit;
+//    }
+    private function noHdCQSSC(&$actionNo, &$actionTime, $time=null) {
+        if (!is_numeric($actionNo)) core::error('开奖时间表中期号数据错误');
         $this->setTimeNo($actionTime, $time);
-        if ($actionNo == 0 || $actionNo == 120) {
-            //echo 999;
-            $actionNo = date('Ymd-120', $time - 24 * 3600);
+        if ($actionNo === 0 || $actionNo === 120){
+            $actionNo = date('Ymd120', $time - 24 * 3600);
             $actionTime = date('Y-m-d 00:00', $time);
-            //echo $actionTime;
         } else {
-            $actionNo = date('Ymd', $time) . substr(1000 + $actionNo, 1);
+            $actionNo = date('Ymd', $time).substr(1000 + $actionNo, 1);
         }
-        //var_dump($actionNo);exit;
     }
+
 
     private function no0Hd_2(&$actionNo, &$actionTime, $time = null)
     {
@@ -300,12 +311,16 @@ class WebBase extends Object
         $actionNo = date('Ymd', $time) . substr(1000 + $actionNo, 1);
     }
 
-    private function no0Hdx(&$actionNo, &$actionTime, $time = null)
-    {
+//    private function no0Hdx(&$actionNo, &$actionTime, $time = null)
+//    {
+//        $this->setTimeNo($actionTime, $time);
+//        $actionNo = date('Ymd', $time) . substr(10000 + $actionNo, 1);
+//    }
+    private function no0Hdx(&$actionNo, &$actionTime, $time=null) {
         $this->setTimeNo($actionTime, $time);
-        $actionNo = date('Ymd', $time) . substr(10000 + $actionNo, 1);
+        $actionNo = date('Ymd', $time).substr(10000 + $actionNo, 1);
+        $actionNo = $actionNo - 1;
     }
-
     private function no0Hd(&$actionNo, &$actionTime, $time = null)
     {
         $this->setTimeNo($actionTime, $time);
@@ -358,10 +373,16 @@ class WebBase extends Object
     }
 
     //北京PK10
-    public function BJpk10(&$actionNo, &$actionTime, $time = null)
-    {
+//    public function BJpk10(&$actionNo, &$actionTime, $time = null)
+//    {
+//        $this->setTimeNo($actionTime, $time);
+//        $actionNo = 179 * (strtotime(date('Y-m-d', $time)) - strtotime('2007-11-11')) / 3600 / 24 + $actionNo - 3793;
+//    }
+
+    private function BJpk10(&$actionNo, &$actionTime, $time=null) {
         $this->setTimeNo($actionTime, $time);
-        $actionNo = 179 * (strtotime(date('Y-m-d', $time)) - strtotime('2007-11-11')) / 3600 / 24 + $actionNo - 3793;
+        $actionNo = 179 * (strtotime(date('Y-m-d', $time)) - strtotime('2007-11-11')) / 3600 / 24 + $actionNo - 3000 - 793;
+        $actionNo -= 1253;
     }
 
     //北京快乐8

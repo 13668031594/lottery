@@ -68,7 +68,6 @@ class Xingcai extends WebBase
 
     public final function pk10()
     {
-
         @session_start();
 
         $lastNo=$this->getGameLastNo(20);
