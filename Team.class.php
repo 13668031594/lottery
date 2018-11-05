@@ -981,7 +981,9 @@ class Team extends WebLoginBase
         if (!$this->user['type']) parent::json_fails('非法操作!');
 //        $this->display('team/add-link.php');
 
-        parent::json_display();
+        $max = $this->iff(($this->user['fenhongbili']-$this->settings['fenhongbiliDiff'])<=0,0,$this->user['fenhongbili']-$this->settings['fenhongbiliDiff']);
+
+        parent::json_display(['max' => $max]);
     }
 
     public final function linkDelete($lid)
@@ -1012,7 +1014,11 @@ class Team extends WebLoginBase
         if (!$this->user['type']) parent::json_fails('非法操作!');
 //        $this->display('team/link-list.php');
 
-        parent::json_display();
+        $sql="select * from {$this->prename}links where enable=1 and uid={$this->user['uid']}";
+        if($_GET['uid']=$this->user['uid']) unset($_GET['uid']);
+        $data=$this->getPage($sql, $this->page, $this->pageSize);
+
+        parent::json_display($data);
     }
 
     public final function getLinkCode($lid)
@@ -1048,9 +1054,11 @@ class Team extends WebLoginBase
         $this->getSystemSettings();
         if (!$_POST) parent::json_fails('提交数据出错，请重新操作');
 
-        $update['uid'] = intval($_POST['uid']);
+//        $update['uid'] = intval($_POST['uid']);
+        $update['uid'] = $this->user['uid'];
         $update['type'] = intval($_POST['type']);
         $update['fenhongbili'] = floatval($_POST['fenhongbili']);
+        $update['fanDian'] = 0;
         $update['regIP'] = $this->ip(true);
         $update['regTime'] = $this->time;
 
