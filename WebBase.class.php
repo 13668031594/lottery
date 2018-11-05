@@ -30,6 +30,9 @@ class WebBase extends Object
             }
         } catch (Exception $e) {
         }
+
+        if ((int)$_GET['pages'])$this->page =(int)$_GET['pages'];
+        if ((int)$_POST['pages'])$this->page = (int)$_POST['pages'];
     }
 
     public function getSystemSettings($expire = null)
