@@ -1053,7 +1053,52 @@ class Team extends WebLoginBase
     public final function searchMember()
     {
         if (!$this->user['type']) parent::json_fails('非法操作!');
-        $this->display('team/member-search-list.php');
+//        $this->display('team/member-search-list.php');
+        $sql = "select * from {$this->prename}members where ";
+        if ($_GET['username'] && $_GET['username'] != '用户名') {
+            $_GET['username'] = wjStrFilter($_GET['username']);
+            if (!ctype_alnum($_GET['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            // 按用户名查找时
+            // 只要符合用户名且是自己所有下级的都可查询
+            // 用户名用模糊方式查询
+            $sql .= "username like '%{$_GET['username']}%' and concat(',',parents,',') like '%,{$this->user['uid']},%'";
+        } else {
+            unset($_GET['username']);
+            switch ($_GET['type']) {
+                case 0:
+                    // 所有人
+                    $sql .= "concat(',',parents,',') like '%,{$this->user['uid']},%'";
+                    break;
+                case 1:
+                    // 我自己
+                    $sql .= "uid={$this->user['uid']}";
+                    break;
+                case 2:
+                    // 直属下级
+                    if (!$_GET['uid']) $_GET['uid'] = $this->user['uid'];
+                    $sql .= "parentId={$_GET['uid']}";
+                    break;
+                case 3:
+                    // 所有下级
+                    $sql .= "concat(',',parents,',') like '%,{$this->user['uid']},%' and uid!={$this->user['uid']}";
+                    break;
+            }
+        }
+
+        if ($_GET['uid'] = $this->user['uid']) unset($_GET['uid']);
+        $data = $this->getPage($sql, $this->page, $this->pageSize);
+        $params = http_build_query($_GET, '', '&');
+
+        if ($data['data']) foreach ($data['data'] as &$var) {
+            $var['login'] = $this->getRow("select * from {$this->prename}member_session where uid=? order by id desc limit 1", $var['uid']);
+        }
+
+        $result = [
+            'params' => $params,
+            'data' => $data
+        ];
+
+        parent::json_display($result);
     }
 
     public final function memberlistlist()
