@@ -671,6 +671,7 @@ class Team extends WebLoginBase
             $fcoinModalWhere = '';
         }
 
+
         $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_yingli l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere  $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
         //echo $sql;
 
@@ -1129,14 +1130,16 @@ class Team extends WebLoginBase
 
                 $this->commit();
 
-                return '添加会员成功';
+//                return '添加会员成功';
+                parent::json_success('添加会员成功');
             } else {
                 parent::json_fails('添加会员失败');
             }
 
         } catch (Exception $e) {
             $this->rollBack();
-            throw $e;
+//            throw $e;
+            parent::json_fails();
         }
     }
 
