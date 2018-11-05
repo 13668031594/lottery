@@ -274,7 +274,7 @@ class Team extends WebLoginBase
         $userWhere3 = "and concat(',', u.parents, ',') like '%,$uid,%'";
 
         //没有账变的不显示
-        $userWhere .= " and u.uid in(select uid from {$this->prename}coin_log where 1=1 $logTimeWhere)";
+        $userWhere .= " and u.uid in(select uid from {$this->prename}coin_log where 1=1 )";
 
         $sql = "select u.username, u.coin, u.uid, u.parentId, sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount, (select sum(c.amount) from {$this->prename}member_cash c where c.`uid`=u.`uid` and c.state=0 $cashTimeWhere) cashAmount,(select sum(r.amount) from {$this->prename}member_recharge r where r.`uid`=u.`uid` and r.state in(1,2,9) $rechargeTimeWhere) rechargeAmount, (select sum(l.coin) from {$this->prename}coin_log l where l.`uid`=u.`uid` and l.liqType in(50,51,52,53,56) $brokerageTimeWhere) brokerageAmount from {$this->prename}members u left join {$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere where 1 $userWhere";
         //echo $sql;exit;
@@ -464,7 +464,7 @@ class Team extends WebLoginBase
             $fcoinModalWhere = '';
         }
 
-        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_benjin l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_benjin l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere  $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
         //echo $sql;
 
         $list = $this->getPage($sql, $this->page, $this->pageSize);
@@ -582,7 +582,7 @@ class Team extends WebLoginBase
             $fcoinModalWhere = '';
         }
 
-        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_fenhong l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_fenhong l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere  $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
         //echo $sql;
 
         $list = $this->getPage($sql, $this->page, $this->pageSize);
@@ -671,7 +671,7 @@ class Team extends WebLoginBase
             $fcoinModalWhere = '';
         }
 
-        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_yingli l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_yingli l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere  $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
         //echo $sql;
 
         $list = $this->getPage($sql, $this->page, $this->pageSize);
@@ -886,7 +886,7 @@ class Team extends WebLoginBase
 //        $this->display('team/delete-link.php', 0, intval($lid));
 
         $sql = "select * from {$this->prename}links where lid=?";
-        $linkData = $this->getRow($sql, intval($lid);
+        $linkData = $this->getRow($sql, intval($lid));
 
         if ($linkData['uid']) {
             $parentData = $this->getRow("select fenhongbili, username from {$this->prename}members where uid=?", $linkData['uid']);
