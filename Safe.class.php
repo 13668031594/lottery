@@ -9,7 +9,7 @@ class Safe extends WebLoginBase
     /**
      * 用户信息页面
      */
-    public final function info()
+    public final function infos()
     {
 //		$this->display('safe/info.php');
 
@@ -19,6 +19,7 @@ class Safe extends WebLoginBase
         $flag = ($myBank['editEnable'] != 1) && ($myBank);
 
         $result = [
+            'myBank' => $myBank,
             'banks' => $banks,
             'flag' => $flag,
         ];
