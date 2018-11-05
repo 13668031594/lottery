@@ -410,94 +410,96 @@ class Team extends WebLoginBase
         $this->getPlayeds();
 
         // 日期限制
-        if($_REQUEST['fromTime'] && $_REQUEST['toTime']){
-            $timeWhere=' and l.actionTime between '. strtotime($_REQUEST['fromTime']).' and '.strtotime($_REQUEST['toTime']);
-        }elseif($_REQUEST['fromTime']){
-            $timeWhere=' and l.actionTime >='. strtotime($_REQUEST['fromTime']);
-        }elseif($_REQUEST['toTime']){
-            $timeWhere=' and l.actionTime <'. strtotime($_REQUEST['toTime']);
-        }else{
+        if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
+        } elseif ($_REQUEST['fromTime']) {
+            $timeWhere = ' and l.actionTime >=' . strtotime($_REQUEST['fromTime']);
+        } elseif ($_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime <' . strtotime($_REQUEST['toTime']);
+        } else {
 
-            if($GLOBALS['fromTime'] && $GLOBALS['toTime']) $timeWhere=' and l.actionTime between '.$GLOBALS['fromTime'].' and '.$GLOBALS['toTime'].' ';
+            if ($GLOBALS['fromTime'] && $GLOBALS['toTime']) $timeWhere = ' and l.actionTime between ' . $GLOBALS['fromTime'] . ' and ' . $GLOBALS['toTime'] . ' ';
         }
 
         // 帐变类型限制
-        if($_REQUEST['liqType']=intval($_REQUEST['liqType'])){
-            $liqTypeWhere=' and liqType='.$_REQUEST['liqType'];
-            if($_REQUEST['liqType']==2) $liqTypeWhere=' and liqType between 2 and 3';
+        if ($_REQUEST['liqType'] = intval($_REQUEST['liqType'])) {
+            $liqTypeWhere = ' and liqType=' . $_REQUEST['liqType'];
+            if ($_REQUEST['liqType'] == 2) $liqTypeWhere = ' and liqType between 2 and 3';
         }
 
         // 用户类型限制
-        if($_REQUEST['username'] && $_REQUEST['username']!='用户名'){
-            $_REQUEST['username']=wjStrFilter($_REQUEST['username']);
-            if(!ctype_alnum($_REQUEST['username'])) throw new Exception('用户名包含非法字符,请重新输入');
-            $userWhere=" and u.parents like '%,{$this->user['uid']},%' and u.username like '%{$_REQUEST['username']}%'";
+        if ($_REQUEST['username'] && $_REQUEST['username'] != '用户名') {
+            $_REQUEST['username'] = wjStrFilter($_REQUEST['username']);
+            if (!ctype_alnum($_REQUEST['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            $userWhere = " and u.parents like '%,{$this->user['uid']},%' and u.username like '%{$_REQUEST['username']}%'";
         }
         //$userWhere3="concat(',',u.parents,',') like '%,{$this->user['uid']},%'"; //所有人
-        if($_REQUEST['userType']){
-            switch($_REQUEST['userType']){
+        if ($_REQUEST['userType']) {
+            switch ($_REQUEST['userType']) {
                 case 1:
-                    $userWhere=" and u.uid={$this->user['uid']}";
+                    $userWhere = " and u.uid={$this->user['uid']}";
                     break;
                 case 2:
-                    $userWhere=" and u.parentId={$this->user['uid']}";
+                    $userWhere = " and u.parentId={$this->user['uid']}";
                     break;
                 case 3:
-                    $userWhere="and concat(',', u.parents, ',') like '%,{$this->user['uid']},%'  and u.uid!={$this->user['uid']}";
+                    $userWhere = "and concat(',', u.parents, ',') like '%,{$this->user['uid']},%'  and u.uid!={$this->user['uid']}";
                     break;
 
             }
-        }else{$userWhere=" and u.parentId={$this->user['uid']}";}
+        } else {
+            $userWhere = " and u.parentId={$this->user['uid']}";
+        }
 
 
         // 冻结查询
-        if($this->action=='fcoinModal'){
-            $fcoinModalWhere='and l.fcoin!=0';
+        if ($this->action == 'fcoinModal') {
+            $fcoinModalWhere = 'and l.fcoin!=0';
         }
 
-        $sql="select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_benjin l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_benjin l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
         //echo $sql;
 
-        $list=$this->getPage($sql, $this->page, $this->pageSize);
-        $params=http_build_query($_REQUEST, '', '&');
-        $modeName=array('1.000'=>'元', '0.100'=>'角', '0.010'=>'分', '0.001'=>'厘'/*,'1.000'=>'1元'*/);
-        $liqTypeName=array(
-            1=>'充值',
-            111=>'卡密充值',
-            2=>'返点',
+        $list = $this->getPage($sql, $this->page, $this->pageSize);
+        $params = http_build_query($_REQUEST, '', '&');
+        $modeName = array('1.000' => '元', '0.100' => '角', '0.010' => '分', '0.001' => '厘'/*,'1.000'=>'1元'*/);
+        $liqTypeName = array(
+            1 => '充值',
+            111 => '卡密充值',
+            2 => '返点',
             //3=>'返点',//分红
             //4=>'抽水金额',
-            5=>'停止追号',
-            6=>'中奖金额',
-            7=>'撤单',
-            8=>'提现失败返回冻结金额',
-            9=>'管理员充值',
-            10=>'解除抢庄冻结金额',
+            5 => '停止追号',
+            6 => '中奖金额',
+            7 => '撤单',
+            8 => '提现失败返回冻结金额',
+            9 => '管理员充值',
+            10 => '解除抢庄冻结金额',
             //11=>'收单金额',
-            12=>'上级充值',
-            13=>'上级充值成功扣款',
-            50=>'签到赠送',
-            51=>'首次绑定工行卡赠送',
-            52=>'充值佣金',
-            53=>'消费佣金',
-            54=>'充值活动奖金',
-            55=>'注册佣金',
-            56=>'至尊佣金奖励',
-            57=>'积分兑换',
+            12 => '上级充值',
+            13 => '上级充值成功扣款',
+            50 => '签到赠送',
+            51 => '首次绑定工行卡赠送',
+            52 => '充值佣金',
+            53 => '消费佣金',
+            54 => '充值活动奖金',
+            55 => '注册佣金',
+            56 => '至尊佣金奖励',
+            57 => '积分兑换',
 
-            100=>'抢庄冻结金额',
-            101=>'投注冻结金额',
-            102=>'追号投注',
-            103=>'抢庄返点金额',
+            100 => '抢庄冻结金额',
+            101 => '投注冻结金额',
+            102 => '追号投注',
+            103 => '抢庄返点金额',
             //104=>'抢庄抽水金额',
-            105=>'抢庄赔付金额',
-            106=>'提现冻结',
-            107=>'提现成功扣除冻结金额',
-            108=>'开奖扣除冻结金额',
-            120=>'幸运大转盘赠送',
-            130=>'幸运砸蛋赠送',
-            140=>'存入投资理财',
-            150=>'投资理财提款'
+            105 => '抢庄赔付金额',
+            106 => '提现冻结',
+            107 => '提现成功扣除冻结金额',
+            108 => '开奖扣除冻结金额',
+            120 => '幸运大转盘赠送',
+            130 => '幸运砸蛋赠送',
+            140 => '存入投资理财',
+            150 => '投资理财提款'
         );
 
         $result = [
@@ -981,7 +983,7 @@ class Team extends WebLoginBase
         if (!$this->user['type']) parent::json_fails('非法操作!');
 //        $this->display('team/add-link.php');
 
-        $max = $this->iff(($this->user['fenhongbili']-$this->settings['fenhongbiliDiff'])<=0,0,$this->user['fenhongbili']-$this->settings['fenhongbiliDiff']);
+        $max = $this->iff(($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff']) <= 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff']);
 
         parent::json_display(['max' => $max]);
     }
@@ -1014,9 +1016,9 @@ class Team extends WebLoginBase
         if (!$this->user['type']) parent::json_fails('非法操作!');
 //        $this->display('team/link-list.php');
 
-        $sql="select * from {$this->prename}links where enable=1 and uid={$this->user['uid']}";
-        if($_GET['uid']=$this->user['uid']) unset($_GET['uid']);
-        $data=$this->getPage($sql, $this->page, $this->pageSize);
+        $sql = "select * from {$this->prename}links where enable=1 and uid={$this->user['uid']}";
+        if ($_GET['uid'] = $this->user['uid']) unset($_GET['uid']);
+        $data = $this->getPage($sql, $this->page, $this->pageSize);
 
         parent::json_display($data);
     }
@@ -1034,8 +1036,13 @@ class Team extends WebLoginBase
             $parentData = $this->getRow($pd, $linkData['uid']);
         }
 
+        $link1 = "http://" . $_SERVER['HTTP_HOST'] . "/index.php/user/r/" . $this->strToHex($this->myxor($linkData['lid']));
+        $link2 = "http://" . $_SERVER['HTTP_HOST'] . "/index.php/user/_api/" . $this->strToHex($this->myxor($linkData['lid']));;
+
         $result = [
             'parentData' => $parentData,
+            'link1' => $link1,
+            'link2' => $link2
         ];
 
         parent::json_display($result);
@@ -1057,32 +1064,31 @@ class Team extends WebLoginBase
 //        $update['uid'] = intval($_POST['uid']);
         $update['uid'] = $this->user['uid'];
         $update['type'] = intval($_POST['type']);
-        $update['fenhongbili'] = floatval($_POST['fenhongbili']);
-        $update['fanDian'] = 0;
-        $update['regIP'] = $this->ip(true);
-        $update['regTime'] = $this->time;
+        $update['fanDian'] = floatval($_POST['fenhongbili']);
+//        $update['regIP'] = $this->ip(true);
+//        $update['regTime'] = $this->time;
 
-        if ($update['fenhongbili'] < 0) parent::json_fails('分红比例不能小于0');
-        if ($update['fenhongbili'] > $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'])) parent::json_fails('分红比例不能大于' . $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff']));
+        if ($update['fanDian'] < 0) parent::json_fails('分红比例不能小于0');
+        if ($update['fanDian'] > $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'])) parent::json_fails('分红比例不能大于' . $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff']));
         if ($update['type'] != 0 && $update['type'] != 1) parent::json_fails('类型出错，请重新操作');
         if ($update['uid'] != $this->user['uid']) parent::json_fails('只能增加自己的推广链接!');
 
         // 查检分红比例设置
-        if ($update['fenhongbili']) {
+        if ($update['fanDian']) {
             $this->getSystemSettings();
-            if ($update['fenhongbili'] % $this->settings['fenhongbiliDiff']) parent::json_fails(sprintf('分红比例只能是%.1f%的倍数', $this->settings['fenhongbiliDiff']));
+            if ($update['fanDian'] % $this->settings['fenhongbiliDiff']) parent::json_fails(sprintf('分红比例只能是%.1f%的倍数', $this->settings['fenhongbiliDiff']));
         } else {
             $update['fenhongbili'] = 0.0;
         }
         $this->beginTransaction();
         try {
-            $sql = "select fenhongbili from {$this->prename}links where uid={$update['uid']} and fenhongbili=? ";
-            if ($this->getValue($sql, $update['fenhongbili'])) parent::json_fails('此链接已经存在');
+            $sql = "select fanDian from {$this->prename}links where uid={$update['uid']} and fanDian=? ";
+            if ($this->getValue($sql, $update['fanDian'])) parent::json_fails('此链接已经存在');
             if ($this->insertRow($this->prename . 'links', $update)) {
                 $id = $this->lastInsertId();
                 $this->commit();
 //                return '添加链接成功';
-                parent::success('添加链接成功');
+                parent::json_success('添加链接成功');
             } else {
                 parent::json_fails('添加链接失败');
             }
@@ -1090,7 +1096,7 @@ class Team extends WebLoginBase
         } catch (Exception $e) {
             $this->rollBack();
 //            throw $e;
-            parent::json_fails();
+            parent::json_fails($e->getMessage());
         }
     }
 
@@ -1108,6 +1114,8 @@ class Team extends WebLoginBase
             $this->getSystemSettings();
             $parentData['fenhongbili'] = $this->settings['fenhongbiliMax'];
         }
+
+        parent::json_display(['parentData' => $parentData]);
     }
 
     public final function linkUpdateed()
@@ -1117,12 +1125,12 @@ class Team extends WebLoginBase
 
         $update['lid'] = intval($_POST['lid']);
         $update['type'] = intval($_POST['type']);
-        $update['fenhongbili'] = floatval($_POST['fenhongbili']);
+        $update['fanDian'] = floatval($_POST['fenhongbili']);
         $update['updateTime'] = $this->time;
         $lid = $update['lid'];
 
-        if ($update['fenhongbili'] < 0) parent::json_fails('分红比例不能小于0');
-        if ($update['fenhongbili'] > $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'])) parent::json_fails('分红比例不能大于' . $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff']));
+        if ($update['fanDian'] < 0) parent::json_fails('分红比例不能小于0');
+        if ($update['fanDian'] > $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'])) parent::json_fails('分红比例不能大于' . $this->iff($this->user['fenhongbili'] - $this->settings['fenhongbiliDiff'] < 0, 0, $this->user['fenhongbili'] - $this->settings['fenhongbiliDiff']));
         if ($uid = $this->getvalue("select uid from {$this->prename}links where lid=?", $lid)) {
             if ($uid != $this->user['uid']) parent::json_fails('只能修改自己的推广链接!');
         } else {
@@ -1131,12 +1139,12 @@ class Team extends WebLoginBase
 
         if (!$_POST['fenhongbili']) {
             unset($_POST['fenhongbili']);
-            unset($update['fenhongbili']);
+            unset($update['fanDian']);
         }
-        if ($update['fenhongbili'] == 0) $update['fenhongbili'] = 0.0;
+        if ($update['fanDian'] == 0) $update['fanDian'] = 0.0;
 
         if ($this->updateRows($this->prename . 'links', $update, "lid=$lid")) {
-            echo '修改成功';
+            parent::json_success();
         } else {
             parent::json_fails('未知出错');
         }
