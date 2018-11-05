@@ -110,9 +110,9 @@ class Record extends WebLoginBase
 
         $modeName = array('1.000' => '元', '0.100' => '角', '0.010' => '分', '0.001' => '厘', '1.000' => '1元');
 
-        foreach ($data as $k => $var) {
+        foreach ($data['data'] as $k => $var) {
 
-            $data[$k]['ifs_title'] = $this->ifs($this->types[$var['type']]['shortName'], $this->types[$var['type']]['title']);
+            $data[$k]['data']['ifs_title'] = $this->ifs($this->types[$var['type']]['shortName'], $this->types[$var['type']]['title']);
         }
 
         $result = [
