@@ -112,7 +112,7 @@ class Record extends WebLoginBase
 
         foreach ($data['data'] as $k => $var) {
 
-            $data[$k]['data']['ifs_title'] = $this->ifs($this->types[$var['type']]['shortName'], $this->types[$var['type']]['title']);
+            $data['data'][$k]['ifs_title'] = $this->ifs($this->types[$var['type']]['shortName'], $this->types[$var['type']]['title']);
         }
 
         $result = [
