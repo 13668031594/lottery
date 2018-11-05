@@ -148,6 +148,8 @@ class Box extends WebLoginBase
             if ($this->getValue($sql2, $arr[$key]) != $this->user['uid']) parent::json_fails('这不是您的消息,无法删除！');
             $this->update($sql, $arr[$key]);
         }
+
+        parent::json_success();
     }
 
     public final function senddeleteAll($id)

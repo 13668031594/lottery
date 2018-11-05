@@ -131,8 +131,6 @@ class Record extends WebLoginBase
         $this->getPlayeds();
 //        $this->display('record/bet-info.php', 0, intval($id));
 
-
-
         $bet=$this->getRow("select * from {$this->prename}bets where id=?", intval($id));
         if(!$bet) throw new Exception('单号不存在');
         $modeName=array('1.000'=>'元', '0.100'=>'角', '0.010'=>'分', '0.001'=>'厘','1.000'=>'1元');
