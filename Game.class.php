@@ -548,8 +548,22 @@ class Game extends WebLoginBase
         } else {
             $actionNo['actionTime'] = strtotime($actionNo['actionTime']);
         }
+
+        $lastNo = $this->getGameLastNo($type);
+
+        $zddata = $this->getGameZdData($type, $lastNo['actionNo']);
+
+        $opencode = $zddata;
+
+
+        $result = [
+            'lastNo' => $lastNo,
+            'opencode'=> $opencode,
+            'actionNo' => $actionNo
+        ];
+
 //        echo json_encode($actionNo);
-        parent::json_success(null, 0, ['actionNo' => $actionNo]);
+        parent::json_display($result);
     }
 
     /**

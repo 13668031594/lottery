@@ -14,7 +14,7 @@ class Xingcai extends WebBase
         $lastNo = $this->getGameLastNo(5);
 
         $zddata = $this->getGameZdData(5, $lastNo['actionNo']);
-        $opencode = $zddata ? $zddata : self::randKeys_ffc();
+        $opencode = $zddata;
 
 //        $action = $this->getGameNo(5);
 
@@ -26,16 +26,6 @@ class Xingcai extends WebBase
         ];
 
         parent::json_display($result);
-    }
-
-    function randKeys_ffc($len = 5)
-    {
-        $rand = '';
-        for ($x = 0; $x < $len; $x++) {
-            srand((double)microtime() * 1000000);
-            $rand .= ($rand != '' ? ',' : '') . mt_rand(0, 9);
-        }
-        return $rand;
     }
 
     public final function cqssc()
