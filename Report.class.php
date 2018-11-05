@@ -260,4 +260,220 @@ class Report extends WebLoginBase
 
         parent::json_display($result);
     }
+
+    public final function benjin()
+    {
+        $this->getTypes();
+        $this->getPlayeds();
+
+        // 日期限制
+        if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
+        } elseif ($_REQUEST['fromTime']) {
+            $timeWhere = ' and l.actionTime >=' . strtotime($_REQUEST['fromTime']);
+        } elseif ($_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime <' . strtotime($_REQUEST['toTime']);
+        } else {
+
+            if ($GLOBALS['fromTime'] && $GLOBALS['toTime']) $timeWhere = ' and l.actionTime between ' . $GLOBALS['fromTime'] . ' and ' . $GLOBALS['toTime'] . ' ';
+        }
+
+        // 帐变类型限制
+        if ($_REQUEST['liqType']) {
+            $liqTypeWhere = ' and liqType=' . intval($_REQUEST['liqType']);
+            if ($_REQUEST['liqType'] == 2) $liqTypeWhere = ' and liqType between 2 and 3';
+        }
+
+
+        //用户限制
+        $userWhere = " and u.uid={$this->user['uid']}";
+
+        // 冻结查询
+        if ($this->action == 'fcoinModal') {
+            $fcoinModalWhere = 'and l.fcoin!=0';
+        }
+
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_benjin l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        //echo $sql;
+
+        $list = $this->getPage($sql, $this->page, $this->pageSize);
+        $params = http_build_query($_REQUEST, '', '&');
+        $modeName = array('1.000' => '元', '0.100' => '角', '0.010' => '分', '0.001' => '厘');
+
+        $liqTypeName = array(
+            '账户类' => array(
+                55 => '注册奖励',
+                1 => '用户充值',
+                9 => '系统充值',
+                54 => '充值奖励',
+                12 => '上级转款',
+
+                700 => '分红提现',//new
+                6 => '中奖奖金',
+                702 => '盈利转出',//new
+            ),
+            '游戏类' => array(
+                101 => '投注扣款',
+                108 => '开奖扣除',
+//            6 => '中奖奖金',
+                7 => '撤单返款',
+                102 => '追号投注',
+                5 => '追号撤单',
+                //11  => '合买收单',old
+                255 => '未开奖返还',
+            ),
+            /*
+            '抢庄类' => array(
+                100 => '抢庄冻结',
+                10  => '撤庄返款',
+                103 => '抢庄返点',
+                104 => '抢庄抽水',
+                105 => '抢庄赔付',
+            ),
+            */
+            '代理类' => array(
+//            3 => '代理分红',
+//            52 => '充值佣金',
+//            53 => '消费佣金',
+//            56 => '亏损佣金',
+                13 => '转款给下级',
+            ),
+            '活动类' => array(
+                50 => '签到赠送',
+//            120 => '幸运大转盘',
+                121 => '积分兑换',
+            ),
+        );
+
+        $result = [
+            'list' => $list,
+            'params' => $params,
+            'modeName' => $modeName,
+            'liqTypeName' => $liqTypeName
+        ];
+
+        parent::json_display($result);
+    }
+
+    public final function yingli()
+    {
+        $this->getTypes();
+        $this->getPlayeds();
+
+        // 日期限制
+        if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
+        } elseif ($_REQUEST['fromTime']) {
+            $timeWhere = ' and l.actionTime >=' . strtotime($_REQUEST['fromTime']);
+        } elseif ($_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime <' . strtotime($_REQUEST['toTime']);
+        } else {
+
+            if ($GLOBALS['fromTime'] && $GLOBALS['toTime']) $timeWhere = ' and l.actionTime between ' . $GLOBALS['fromTime'] . ' and ' . $GLOBALS['toTime'] . ' ';
+        }
+
+        // 帐变类型限制
+        if ($_REQUEST['liqType']) {
+            $liqTypeWhere = ' and liqType=' . intval($_REQUEST['liqType']);
+            if ($_REQUEST['liqType'] == 2) $liqTypeWhere = ' and liqType between 2 and 3';
+        }
+
+
+        //用户限制
+        $userWhere = " and u.uid={$this->user['uid']}";
+
+        // 冻结查询
+        if ($this->action == 'fcoinModal') {
+            $fcoinModalWhere = 'and l.fcoin!=0';
+        }
+
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_yingli l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        //echo $sql;
+
+        $list = $this->getPage($sql, $this->page, $this->pageSize);
+        $params = http_build_query($_REQUEST, '', '&');
+        $modeName = array('1.000' => '元', '0.100' => '角', '0.010' => '分', '0.001' => '厘');
+
+        $liqTypeName = array(
+            '账户类' => array(
+                667 => '盈利日转'//new
+            ),
+            '游戏类' => array(
+                701 => '盈利',
+            ),
+        );
+
+        $result = [
+            'list' => $list,
+            'params' => $params,
+            'modeName' => $modeName,
+            'liqTypeName' => $liqTypeName
+        ];
+
+        parent::json_display($result);
+    }
+
+    public final function fenhong()
+    {
+        $this->getTypes();
+        $this->getPlayeds();
+
+        // 日期限制
+        if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
+        } elseif ($_REQUEST['fromTime']) {
+            $timeWhere = ' and l.actionTime >=' . strtotime($_REQUEST['fromTime']);
+        } elseif ($_REQUEST['toTime']) {
+            $timeWhere = ' and l.actionTime <' . strtotime($_REQUEST['toTime']);
+        } else {
+
+            if ($GLOBALS['fromTime'] && $GLOBALS['toTime']) $timeWhere = ' and l.actionTime between ' . $GLOBALS['fromTime'] . ' and ' . $GLOBALS['toTime'] . ' ';
+        }
+
+        // 帐变类型限制
+        if ($_REQUEST['liqType']) {
+            $liqTypeWhere = ' and liqType=' . intval($_REQUEST['liqType']);
+            if ($_REQUEST['liqType'] == 2) $liqTypeWhere = ' and liqType between 2 and 3';
+        }
+
+
+        //用户限制
+        $userWhere = " and u.uid={$this->user['uid']}";
+
+        // 冻结查询
+        if ($this->action == 'fcoinModal') {
+            $fcoinModalWhere = 'and l.fcoin!=0';
+        }
+
+        $sql = "select b.type, b.playedId, b.actionNo, b.mode, l.liqType, l.coin, l.fcoin, l.userCoin, l.actionTime, l.extfield0, l.extfield1, l.info, u.username from {$this->prename}members u, {$this->prename}coin_log_fenhong l left join {$this->prename}bets b on b.id=extfield0 where l.uid=u.uid $liqTypeWhere $timeWhere $userWhere $typeWhere $fcoinModalWhere and l.liqType not in(4,11,104) order by l.id desc";
+        //echo $sql;
+
+        $list = $this->getPage($sql, $this->page, $this->pageSize);
+        $params = http_build_query($_REQUEST, '', '&');
+        $modeName = array('1.000' => '元', '0.100' => '角', '0.010' => '分', '0.001' => '厘');
+
+        $liqTypeName = array(
+            '账户类' => array(
+//            2 => '下级返点',
+                669 => '转移到到余额',//new
+                106 => '提现冻结',
+                8 => '提现失败返还',
+                107 => '提现成功扣除',
+                51 => '绑定银行奖励',
+                666 => '盈利转入',//new
+            ),
+            '游戏类' => array(
+                668 => '亏损分红',//new
+            ),
+        );
+
+        $result = [
+            'list' => $list,
+            'params' => $params,
+            'modeName' => $modeName,
+            'liqTypeName' => $liqTypeName
+        ];
+
+        parent::json_display($result);
+    }
 }
