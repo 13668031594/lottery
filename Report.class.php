@@ -266,6 +266,21 @@ class Report extends WebLoginBase
         $this->getTypes();
         $this->getPlayeds();
 
+        $uid = $_GET['uid'];
+
+        if (!empty($uid)){
+
+            $sql = "SELECT uid,parents FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
+            $test = $this->getValue($sql);
+
+            if (empty($test))parent::json_fails(['只能看自己的下级']);
+        }else{
+
+            $uid = $this->user['uid'];
+        }
+
+        $uid = empty($uid) ? $this->user['uid'] : $uid;
+
         // 日期限制
         if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
             $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
@@ -286,7 +301,7 @@ class Report extends WebLoginBase
 
 
         //用户限制
-        $userWhere = " and u.uid={$this->user['uid']}";
+        $userWhere = " and u.uid={$uid}";
 
         // 冻结查询
         if ($this->action == 'fcoinModal') {
@@ -377,6 +392,18 @@ class Report extends WebLoginBase
         $this->getTypes();
         $this->getPlayeds();
 
+        $uid = $_GET['uid'];
+        if (!empty($uid)){
+
+            $sql = "SELECT uid,parents FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
+            $test = $this->getValue($sql);
+
+            if (empty($test))parent::json_fails(['只能看自己的下级']);
+        }else{
+
+            $uid = $this->user['uid'];
+        }
+
         // 日期限制
         if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
             $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
@@ -397,7 +424,7 @@ class Report extends WebLoginBase
 
 
         //用户限制
-        $userWhere = " and u.uid={$this->user['uid']}";
+        $userWhere = " and u.uid={$uid}";
 
         // 冻结查询
         if ($this->action == 'fcoinModal') {
@@ -452,6 +479,18 @@ class Report extends WebLoginBase
         $this->getTypes();
         $this->getPlayeds();
 
+        $uid = $_GET['uid'];
+        if (!empty($uid)){
+
+            $sql = "SELECT uid,parents FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
+            $test = $this->getValue($sql);
+
+            if (empty($test))parent::json_fails(['只能看自己的下级']);
+        }else{
+
+            $uid = $this->user['uid'];
+        }
+
         // 日期限制
         if ($_REQUEST['fromTime'] && $_REQUEST['toTime']) {
             $timeWhere = ' and l.actionTime between ' . strtotime($_REQUEST['fromTime']) . ' and ' . strtotime($_REQUEST['toTime']);
@@ -472,7 +511,7 @@ class Report extends WebLoginBase
 
 
         //用户限制
-        $userWhere = " and u.uid={$this->user['uid']}";
+        $userWhere = " and u.uid={$uid}";
 
         // 冻结查询
         if ($this->action == 'fcoinModal') {
