@@ -1163,7 +1163,7 @@ class Team extends WebLoginBase
         }
         $sql = "delete from {$this->prename}links where lid=?";
         if ($this->update($sql, $lid)) {
-            return '删除成功';
+            parent::json_success();
         } else {
             parent::json_fails('未知出错');
         }
