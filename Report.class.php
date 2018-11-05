@@ -270,7 +270,7 @@ class Report extends WebLoginBase
 
         if (!empty($uid)){
 
-            $sql = "SELECT uid,parents FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
+            $sql = "SELECT uid FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
             $test = $this->getValue($sql);
 
             if (empty($test))parent::json_fails(['只能看自己的下级']);
@@ -395,7 +395,7 @@ class Report extends WebLoginBase
         $uid = $_GET['uid'];
         if (!empty($uid)){
 
-            $sql = "SELECT uid,parents FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
+            $sql = "SELECT uid FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
             $test = $this->getValue($sql);
 
             if (empty($test))parent::json_fails(['只能看自己的下级']);
@@ -482,7 +482,7 @@ class Report extends WebLoginBase
         $uid = $_GET['uid'];
         if (!empty($uid)){
 
-            $sql = "SELECT uid,parents FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
+            $sql = "SELECT uid FROM {$this->prename}members WHERE parents LIKE '%{$this->user['uid']}%' AND uid = {$uid}";
             $test = $this->getValue($sql);
 
             if (empty($test))parent::json_fails(['只能看自己的下级']);
