@@ -1064,7 +1064,7 @@ class Team extends WebLoginBase
 //        $update['uid'] = intval($_POST['uid']);
         $update['uid'] = $this->user['uid'];
         $update['type'] = intval($_POST['type']);
-        $update['fanDian'] = floatval($_POST['fenhongbili']);
+        $update['fanDian'] = floatval($_POST['fanDian']);
 //        $update['regIP'] = $this->ip(true);
 //        $update['regTime'] = $this->time;
 
@@ -1078,7 +1078,7 @@ class Team extends WebLoginBase
             $this->getSystemSettings();
             if ($update['fanDian'] % $this->settings['fenhongbiliDiff']) parent::json_fails(sprintf('分红比例只能是%.1f%的倍数', $this->settings['fenhongbiliDiff']));
         } else {
-            $update['fenhongbili'] = 0.0;
+            $update['fanDian'] = 0.0;
         }
         $this->beginTransaction();
         try {
@@ -1125,7 +1125,7 @@ class Team extends WebLoginBase
 
         $update['lid'] = intval($_POST['lid']);
         $update['type'] = intval($_POST['type']);
-        $update['fanDian'] = floatval($_POST['fenhongbili']);
+        $update['fanDian'] = floatval($_POST['fanDian']);
         $update['updateTime'] = $this->time;
         $lid = $update['lid'];
 
@@ -1137,8 +1137,8 @@ class Team extends WebLoginBase
             parent::json_fails('此注册链接不存在');
         }
 
-        if (!$_POST['fenhongbili']) {
-            unset($_POST['fenhongbili']);
+        if (!$_POST['fanDian']) {
+            unset($_POST['fanDian']);
             unset($update['fanDian']);
         }
         if ($update['fanDian'] == 0) $update['fanDian'] = 0.0;
