@@ -345,6 +345,23 @@ class Report extends WebLoginBase
             ),
         );
 
+        foreach ($list['data'] as &$v){
+
+            if ($v['extfield0']) {
+                if (in_array($v['liqType'], array(101, 108, 255, 6, 7, 102, 5, 11, 100, 10, 103, 104, 105, 2))) {
+                    $v['extfield'] = '投注：'.$v['extfield0'];
+                } else if (in_array($v['liqType'], array(1, 9, 52, 54))) {
+                    $v['extfield'] = '充值：'.$v['extfield0'];
+                } else if (in_array($v['liqType'], array(8, 106, 107))) {
+                    $v['extfield'] = '提现：'.$v['extfield0'];
+                } else {
+                    $v['extfield'] = '--';
+                }
+            } else {
+                $v['extfield'] = '--';
+            }
+        }
+
         $result = [
             'list' => $list,
             'params' => $params,
@@ -402,6 +419,23 @@ class Report extends WebLoginBase
                 701 => '盈利',
             ),
         );
+
+        foreach ($list['data'] as &$v){
+
+            if ($v['extfield0']) {
+                if (in_array($v['liqType'], array(101, 108, 255, 6, 7, 102, 5, 11, 100, 10, 103, 104, 105, 2))) {
+                    $v['extfield'] = '投注：'.$v['extfield0'];
+                } else if (in_array($v['liqType'], array(1, 9, 52, 54))) {
+                    $v['extfield'] = '充值：'.$v['extfield0'];
+                } else if (in_array($v['liqType'], array(8, 106, 107))) {
+                    $v['extfield'] = '提现：'.$v['extfield0'];
+                } else {
+                    $v['extfield'] = '--';
+                }
+            } else {
+                $v['extfield'] = '--';
+            }
+        }
 
         $result = [
             'list' => $list,
@@ -466,6 +500,23 @@ class Report extends WebLoginBase
                 668 => '亏损分红',//new
             ),
         );
+
+        foreach ($list['data'] as &$v){
+
+            if ($v['extfield0']) {
+                if (in_array($v['liqType'], array(101, 108, 255, 6, 7, 102, 5, 11, 100, 10, 103, 104, 105, 2))) {
+                    $v['extfield'] = '投注：'.$v['extfield0'];
+                } else if (in_array($v['liqType'], array(1, 9, 52, 54))) {
+                    $v['extfield'] = '充值：'.$v['extfield0'];
+                } else if (in_array($v['liqType'], array(8, 106, 107))) {
+                    $v['extfield'] = '提现：'.$v['extfield0'];
+                } else {
+                    $v['extfield'] = '--';
+                }
+            } else {
+                $v['extfield'] = '--';
+            }
+        }
 
         $result = [
             'list' => $list,
