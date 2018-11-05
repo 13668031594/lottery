@@ -350,4 +350,9 @@ class Index extends WebLoginBase
 
         parent::json_display(['info' => $info]);
     }
+
+    public final function noticeList()
+    {
+        parent::json_display(self::notice());
+    }
 }

@@ -24,8 +24,6 @@ class Report extends WebLoginBase
     {
         $this->type = intval($type);
 //        $this->display('report/coin-log.php');
-
-
     }
 
     // �ܽ����ѯ
