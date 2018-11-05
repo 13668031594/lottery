@@ -30,6 +30,7 @@ class Game extends WebLoginBase
         fclose($posts);*/
 
         if ($this->type) $para['type'] = $this->type;
+
         $amount = 0;
         $mincoin = 0;
         $maxcount = 0;
@@ -565,6 +566,7 @@ class Game extends WebLoginBase
             $this->getTypes();
         if (!$this->playeds)
             $this->getPlayeds();
+
         $modes = array(
             '0.001' => '厘',
             '0.010' => '分',
@@ -575,9 +577,9 @@ class Game extends WebLoginBase
         $toTime = strtotime('00:00:00');
         $sql = "select id,wjorderId,actionNo,actionTime,fpEnable,playedId,type,left(actionData,15) as shows,beiShu,mode,actionNum,lotteryNo,bonus,isDelete,kjTime,zjCount from {$this->prename}bets where  isDelete=0 and uid={$this->user['uid']} and actionTime>{$toTime} order by id desc limit 10";
 
-        $list = $this->getRows($sql, $actionNo['actionNo']);
+        $list = $this->getRows($sql);
 
-        parent::json_display(['list' => $list]);
+        parent::json_display(['list' => $list,'modes' => $modes]);
     }
 
     /**

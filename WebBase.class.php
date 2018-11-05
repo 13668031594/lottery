@@ -548,7 +548,6 @@ class WebBase extends Object
     //获取延迟时间
     public function getTypeFtime($type)
     {
-
         if ($type) {
             $Ftime = $this->getValue("select data_ftime from {$this->prename}type where id = ? ", $type);
         }

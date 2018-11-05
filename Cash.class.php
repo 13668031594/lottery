@@ -222,7 +222,7 @@ class Cash extends WebLoginBase
 //        if ($para['amount'] > $this->user['coin']) throw new Exception("提款金额大于可用余额，无法提款");
         if ($para['amount'] > $this->user['fenhong']) parent::json_fails("提款金额大于可用分红，无法提款");
 //        if ($this->user['coin'] <= 0) throw new Exception("可用余额为零，无法提款");
-        if ($this->user['分红'] <= 0) throw new Exception("可用分红为零，无法提款");
+        if ($this->user['fenhong'] <= 0) parent::json_fails("可用分红为零，无法提款");
 
         //提示时间检查
         $baseTime = strtotime(date('Y-m-d ', $this->time) . '06:00');
