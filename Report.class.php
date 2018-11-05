@@ -23,7 +23,9 @@ class Report extends WebLoginBase
     public final function coinlog($type = 0)
     {
         $this->type = intval($type);
-        $this->display('report/coin-log.php');
+//        $this->display('report/coin-log.php');
+
+
     }
 
     // �ܽ����ѯ
@@ -81,7 +83,7 @@ class Report extends WebLoginBase
         $userWhere3 = "and concat(',', u.parents, ',') like '%,$uid,%'";
 
 //        $sql = "select u.username, u.benjin, u.uid, u.parentId, sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount, (select sum(c.amount) from {$this->prename}member_cash c where c.`uid`=u.`uid` and c.state=0 $cashTimeWhere) cashAmount,(select sum(r.amount) from {$this->prename}member_recharge r where r.`uid`=u.`uid` and r.state in(1,2,9) $rechargeTimeWhere) rechargeAmount, (select sum(l.coin) from {$this->prename}coin_log_benjin l where l.`uid`=u.`uid` and l.liqType in(50,51,52,53,56) $brokerageTimeWhere) brokerageAmount from {$this->prename}members u left join {$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere where 1 $userWhere";
-        $sql = "select u.username, u.benjin, u.uid, u.parentId, sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount, (select sum(c.amount) from {$this->prename}member_cash c where c.`uid`=u.`uid` and c.state=0 $cashTimeWhere) cashAmount,(select sum(r.amount) from {$this->prename}member_recharge r where r.`uid`=u.`uid` and r.state in(1,2,9) $rechargeTimeWhere) rechargeAmount, (select sum(l.coin) from {$this->prename}coin_log_benjin l where l.`uid`=u.`uid`  $brokerageTimeWhere) brokerageAmount from {$this->prename}members u left join {$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere where 1 $userWhere";
+        $sql = "select u.username, u.benjin, u.uid, u.parentId, sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount, (select sum(c.amount) from {$this->prename}member_cash c where c.`uid`=u.`uid` and c.state=0 $cashTimeWhere) cashAmount,(select sum(r.amount) from {$this->prename}member_recharge r where r.`uid`=u.`uid` and r.state in(1,2,9) $rechargeTimeWhere) rechargeAmount, (select sum(l.coin) from {$this->prename}coin_log_benjin l where l.`uid`=u.`uid`  and l.liqType in(50,51,52,53) $brokerageTimeWhere) brokerageAmount from {$this->prename}members u left join {$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere where 1 $userWhere";
         //echo $sql;exit;
 
         $this->pageSize -= 1;
@@ -131,5 +133,131 @@ class Report extends WebLoginBase
         parent::json_display($result);
     }
 
+    public final function dateList()
+    {
+        $para = $_GET;
+        //echo $para['uid'];
+        // 时间限制
+        if ($para['fromTime'] && $para['toTime']) {
+            $fromTime = strtotime($para['fromTime']);
+            $toTime = strtotime($para['toTime']) + 24 * 3600;
+            $betTimeWhere = "and actionTime between $fromTime and $toTime";
+            $cashTimeWhere = "and c.actionTime between $fromTime and $toTime";
+            $rechargeTimeWhere = "and r.actionTime between $fromTime and $toTime";
+            $fanDiaTimeWhere = "and actionTime between $fromTime and $toTime";
+            $fanDiaTimeWhere2 = "and l.actionTime between $fromTime and $toTime";
+            $brokerageTimeWhere = $fanDiaTimeWhere2;
+        } elseif ($para['fromTime']) {
+            $fromTime = strtotime($para['fromTime']);
+            $betTimeWhere = "and b.actionTime >=$fromTime";
+            $cashTimeWhere = "and c.actionTime >=$fromTime";
+            $rechargeTimeWhere = "and r.actionTime >=$fromTime";
+            $fanDiaTimeWhere = "and actionTime >= $fromTime";
+            $fanDiaTimeWhere2 = "and l.actionTime >= $fromTime";
+            $brokerageTimeWhere = $fanDiaTimeWhere2;
+        } elseif ($para['toTime']) {
+            $toTime = strtotime($para['toTime']) + 24 * 3600;
+            $betTimeWhere = "and b.actionTime < $toTime";
+            $cashTimeWhere = "and c.actionTime < $toTime";
+            $rechargeTimeWhere = "and r.actionTime < $toTime";
+            $fanDiaTimeWhere = "and actionTime < $toTime";
+            $fanDiaTimeWhere2 = "and l.actionTime < $toTime";
+            $brokerageTimeWhere = $fanDiaTimeWhere2;
+        } else {
+            $toTime = strtotime('00:00');
+            $betTimeWhere = "and b.actionTime > $toTime";
+            $cashTimeWhere = "and c.actionTime > $toTime";
+            $rechargeTimeWhere = "and r.actionTime > $toTime";
+            $fanDiaTimeWhere = "and actionTime > $toTime";
+            $fanDiaTimeWhere2 = "and l.actionTime > $toTime";
+            $brokerageTimeWhere = $fanDiaTimeWhere2;
+        }
 
+        // 用户限制
+        $amountTitle = '全部总结';
+        if ($para['parentId'] = intval($para['parentId'])) {
+            // 用户ID限制
+            $userWhere = "and u.parentId={$para['parentId']}";
+            $parentIdWhere = "and u.parentId={$para['parentId']}";
+            $uid = $para['parentId'];
+            $userWhere3 = "and concat(',', u.parents, ',') like '%,$uid,%'";
+            $amountTitle = '团队统计';
+        }
+        if ($para['uid'] = intval($para['uid'])) {
+            // 用户ID限制
+            $uParentId = $this->getValue("select parentId from {$this->prename}members where uid=?", $para['uid']);
+            $userWhere = "and u.uid=$uParentId";
+            $uid = $uParentId;
+            $userWhere3 = "and concat(',', u.parents, ',') like '%,$uid,%'";
+            $amountTitle = '团队统计';
+        }
+        if ($para['username'] && $para['username'] != '用户名') {
+            $para['username'] = wjStrFilter($para['username']);
+            if (!ctype_alnum($para['username'])) throw new Exception('用户名包含非法字符,请重新输入');
+            // 用户名限制
+            $userWhere = "and u.username='{$para['username']}'";
+            $uid = $this->getValue("select uid from {$this->prename}members where username='{$para['username']}'");
+            $userWhere3 = "and concat(',', u.parents, ',') like '%,$uid,%'";
+            $amountTitle = '团队统计';
+        }
+
+        $sql = "select u.username, u.benjin,u.fenhong,u.yingli, u.uid, u.parentId, sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount, (select sum(c.amount) from {$this->prename}member_cash c where c.`uid`=u.`uid` and c.state=0 $cashTimeWhere) cashAmount,(select sum(r.amount) from {$this->prename}member_recharge r where r.`uid`=u.`uid` and r.state in(1,2,9) $rechargeTimeWhere) rechargeAmount, (select sum(l.coin) from {$this->prename}coin_log_benjin l where l.`uid`=u.`uid` and l.liqType in(50,51,52,53) $brokerageTimeWhere) brokerageAmount from {$this->prename}members u left join {$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere where 1 $userWhere";
+        //echo $sql;exit;
+
+        $this->pageSize -= 1;
+        if ($this->action != 'betDate') $this->action = 'betDate';
+        $list = $this->getPage($sql . ' group by u.uid', $this->page, $this->pageSize);
+        if (!$list['total']) {
+            $uParentId2 = $this->getValue("select parentId from {$this->prename}members where uid=?", $para['parentId']);
+            $list = array(
+                'total' => 1,
+                'data' => array(array(
+                    'parentId' => $uParentId2,
+                    'uid' => $para['parentId'],
+                    'username' => '没有下级了'
+                ))
+            );
+            $noChildren = true;
+        }
+        $params = http_build_query($_REQUEST, '', '&');
+        $count = array();
+
+        //$sql2="select sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount, (select sum(c.amount) from {$this->>$this->prename}member_cash c where c.`uid`=u.`uid` and c.state=0 $cashTimeWhere) cashAmount,(select sum(r.amount) from {$this->>$this->prename}member_recharge r where r.`uid`=u.`uid` and r.state in(1,2,9) $rechargeTimeWhere) rechargeAmount from {$this->>$this->prename}members u left join {$this->>$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere $parentIdWhere";
+        $sql2 = "select sum(b.mode * b.beiShu * b.actionNum) betAmount, sum(b.bonus) zjAmount from {$this->prename}members u left join {$this->prename}bets b on u.uid=b.uid and b.isDelete=0 $betTimeWhere $userWhere3";
+
+        $all = $this->getRow($sql2);
+        $all['brokerageAmount'] = $this->getValue("select sum(l.coin) from {$this->prename}coin_log_benjin l, {$this->prename}members u where l.liqType in(50,51,52,53) and l.uid=u.uid $brokerageTimeWhere $userWhere3", $var['uid']);
+        $all['rechargeAmount'] = $this->getValue("select sum(r.amount) from {$this->prename}member_recharge r, {$this->prename}members u where r.state in (1,2,9) and r.uid=u.uid $rechargeTimeWhere $userWhere3", $var['uid']);
+        $all['cashAmount'] = $this->getValue("select sum(c.amount) from {$this->prename}member_cash c, {$this->prename}members u  where c.state=0 and c.uid=u.uid $cashTimeWhere $userWhere3", $var['uid']);
+        $all['benjin'] = $this->getValue("select sum(u.benjin) benjin from {$this->prename}members u where 1 $userWhere3", $var['uid']);
+        $all['yingli'] = $this->getValue("select sum(u.yingli) yingli from {$this->prename}members u where 1 $userWhere3", $var['uid']);
+        $all['fenhong'] = $this->getValue("select sum(u.fenhong) fenhong from {$this->prename}bets u where 1 $userWhere3", $var['uid']);
+
+        if ($list['data']) foreach ($list['data'] as $var) {
+
+            if ($var['username'] != '没有下级了') {
+                $pId = $var['uid'];
+                $var['teamwin'] = $this->getValue("select sum(l.coin) fandianAll from {$this->prename}coin_log_benjin l, {$this->prename}members u where l.liqType in(2,3) and l.uid=u.uid and concat(',', u.parents, ',') like '%,$pId,%' $fanDiaTimeWhere") + $this->getValue("select sum(b.bonus-b.mode * b.beiShu * b.actionNum) betZjAmount from {$this->prename}members u ,{$this->prename}bets b where u.uid=b.uid and b.isDelete=0 and concat(',', u.parents, ',') like '%,$pId,%' $betTimeWhere");
+            }
+
+            $count['betAmount'] += $var['betAmount'];
+            $count['zjAmount'] += $var['zjAmount'];
+            $count['fanDianAmount'] += $var['fanDianAmount'];
+            $count['brokerageAmount'] += $var['brokerageAmount'];
+            $count['cashAmount'] += $var['cashAmount'];
+            $count['benjin'] += $var['benjin'];
+            $count['fenhong'] += $var['fenhong'];
+            $count['yingli'] += $var['yingli'];
+            $count['rechargeAmount'] += $var['rechargeAmount'];
+            $count['teamwin'] += $var['teamwin'];
+        }
+
+        $result = [
+            'all' => $all,
+            'count' => $count,
+            'list' => $list,
+        ];
+
+        parent::json_display($result);
+    }
 }
