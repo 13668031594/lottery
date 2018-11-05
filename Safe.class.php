@@ -194,7 +194,7 @@ class Safe extends WebLoginBase
         if ($bank = $this->getRow("select editEnable from {$this->prename}member_bank where uid=? LIMIT 1", $this->user['uid'])) {
             $update['xgtime'] = $this->time;
             if ($this->updateRows($this->prename . 'member_bank', $update, 'uid=' . $this->user['uid'])) {
-                return '更改银行信息成功';
+                parent::json_success('更改银行信息成功');
             } else {
                 parent::json_fails('更改银行信息出错');
             }
